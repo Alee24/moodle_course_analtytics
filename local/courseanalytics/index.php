@@ -9,6 +9,8 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/completionlib.php');
+require_once($CFG->dirroot . '/enrol/locallib.php');
 
 $categoryid = optional_param('category', 0, PARAM_INT);
 
@@ -46,24 +48,41 @@ foreach ($courses as $course) {
 
 $categories = $DB->get_records('course_categories', null, 'name ASC', 'id, name');
 
+// Convert courses to plain arrays for Mustache
+$formatted_courses_out = [];
+foreach ($formatted_courses as $c) {
+    $formatted_courses_out[] = [
+        'id'           => $c->id,
+        'fullname'     => $c->fullname,
+        'shortname'    => $c->shortname,
+        'categoryname' => $c->categoryname,
+        'metrics'      => (array) $c->metrics,
+        'last_access_formatted' => $c->last_access_formatted,
+        'url'          => (new moodle_url('/local/courseanalytics/course.php', ['id' => $c->id]))->out(false),
+    ];
+}
+
 $data = [
     'urls' => [
-        'index' => new moodle_url('/local/courseanalytics/index.php'),
-        'course' => new moodle_url('/local/courseanalytics/course.php'),
+        'index'  => (new moodle_url('/local/courseanalytics/index.php'))->out(false),
+        'export' => (new moodle_url('/local/courseanalytics/export.php'))->out(false),
     ],
-    'courses' => $formatted_courses,
-    'categories' => array_values($categories),
+    'courses'    => $formatted_courses_out,
+    'categories' => array_values(array_map(function($cat) use ($categoryid) {
+        return ['id' => $cat->id, 'name' => $cat->name, 'selected' => ($cat->id == $categoryid)];
+    }, $categories)),
     'charts' => [
         'participation' => [
-            'active' => $total_active,
+            'active'   => $total_active,
             'inactive' => $total_inactive,
         ],
         'engagement' => [
             'labels' => $engagement_labels,
-            'data' => $engagement_data,
+            'data'   => $engagement_data,
         ]
     ],
-    'footer_text' => get_string('developedby', 'local_courseanalytics') . ' "' . get_string('kkdes_url', 'local_courseanalytics') . '"'
+    'footer_text' => get_string('developedby', 'local_courseanalytics')
+        . ' <a href="' . get_string('kkdes_url', 'local_courseanalytics') . '" target="_blank">KKDES</a>',
 ];
 
 echo $OUTPUT->header();

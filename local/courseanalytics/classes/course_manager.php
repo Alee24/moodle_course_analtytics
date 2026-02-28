@@ -66,6 +66,8 @@ class course_manager {
      * @return array
      */
     public static function get_course_metrics($courseid) {
+        global $CFG;
+        require_once($CFG->libdir . '/completionlib.php');
         $course = \get_course($courseid);
         $context = \context_course::instance($courseid);
 

@@ -8,6 +8,8 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once($CFG->libdir . '/completionlib.php');
+require_once($CFG->dirroot . '/enrol/locallib.php');
 
 $id = required_param('id', PARAM_INT);
 $course = get_course($id);
@@ -30,17 +32,19 @@ $students = \local_courseanalytics\course_manager::get_student_list($id);
 
 $data = [
     'course' => [
-        'id' => $id,
-        'fullname' => $course->fullname,
+        'id'        => $id,
+        'fullname'  => $course->fullname,
         'shortname' => $course->shortname,
     ],
-    'metrics' => $metrics,
+    'metrics'  => $metrics,
     'sections' => $sections,
     'students' => $students,
     'urls' => [
-        'back' => new moodle_url('/local/courseanalytics/index.php'),
+        'back'   => (new moodle_url('/local/courseanalytics/index.php'))->out(false),
+        'export' => (new moodle_url('/local/courseanalytics/export.php', ['id' => $id]))->out(false),
     ],
-    'footer_text' => get_string('developedby', 'local_courseanalytics') . ' "' . get_string('kkdes_url', 'local_courseanalytics') . '"'
+    'footer_text' => get_string('developedby', 'local_courseanalytics')
+        . ' <a href="' . get_string('kkdes_url', 'local_courseanalytics') . '" target="_blank">KKDES</a>',
 ];
 
 echo $OUTPUT->header();
