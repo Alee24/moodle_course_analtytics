@@ -4,7 +4,7 @@ namespace local_courseanalytics;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Course Manager class for fetching and filtering courses.
+ * Course Manager class.
  *
  * @package    local_courseanalytics
  * @copyright  2024 KKDES <https://kkdes.co.ke/>
@@ -14,10 +14,6 @@ class course_manager {
 
     /**
      * Get list of courses based on user permissions and filters.
-     *
-     * @param int $categoryid
-     * @param int $teacherid
-     * @return array
      */
     public static function get_courses($categoryid = 0, $teacherid = 0) {
         global $DB, $USER;
@@ -26,7 +22,7 @@ class course_manager {
         $sql = "SELECT c.id, c.fullname, c.shortname, c.category, cat.name as categoryname
                 FROM {course} c
                 JOIN {course_categories} cat ON c.category = cat.id
-                WHERE c.id > 1"; // Exclude site course
+                WHERE c.id > 1";
 
         if ($categoryid > 0) {
             $sql .= " AND c.category = :categoryid";
@@ -34,7 +30,6 @@ class course_manager {
         }
 
         if (!\is_siteadmin()) {
-            // If not admin, only show courses where user is enrolled
             $user_courses = \enrol_get_all_users_courses($USER->id);
             if (empty($user_courses)) {
                 return [];
@@ -55,71 +50,173 @@ class course_manager {
         }
 
         $sql .= " ORDER BY c.fullname ASC";
-
         return $DB->get_records_sql($sql, $params);
     }
 
     /**
-     * Get analytics metrics for a specific course.
-     *
-     * @param int $courseid
-     * @return array
+     * Get the primary lecturer (editing teacher) for a course.
      */
-    public static function get_course_metrics($courseid) {
+    public static function get_course_lecturer($courseid) {
+        global $DB;
+
+        $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.lastaccess
+                FROM {user} u
+                JOIN {role_assignments} ra ON ra.userid = u.id
+                JOIN {role} r ON r.id = ra.roleid
+                JOIN {context} ctx ON ctx.id = ra.contextid
+                WHERE ctx.contextlevel = :ctxlevel
+                  AND ctx.instanceid = :courseid
+                  AND r.shortname IN ('editingteacher','manager')
+                ORDER BY u.lastaccess DESC";
+
+        $lecturers = $DB->get_records_sql($sql, [
+            'ctxlevel' => CONTEXT_COURSE,
+            'courseid' => $courseid,
+        ]);
+
+        if (empty($lecturers)) {
+            return null;
+        }
+        return reset($lecturers); // Return first (most recently active)
+    }
+
+    /**
+     * Count module types in a course.
+     * Returns associative array: modname => count.
+     */
+    public static function get_module_counts($courseid) {
+        global $DB;
+
+        $modinfo = \get_fast_modinfo(\get_course($courseid));
+        $counts  = [
+            'assign'   => 0,
+            'quiz'     => 0,
+            'forum'    => 0,
+            'resource' => 0, // files
+            'url'      => 0,
+            'page'     => 0,
+            'folder'   => 0,
+            'video'    => 0, // label + resource with video mime
+            'other'    => 0,
+            'total'    => 0,
+        ];
+
+        // Detect video files by checking file mime types
+        $video_mimes = ['video/mp4','video/mpeg','video/ogg','video/webm','video/quicktime','video/x-flv','video/x-msvideo'];
+
+        foreach ($modinfo->get_cms() as $cm) {
+            $counts['total']++;
+            $modname = $cm->modname;
+            if (isset($counts[$modname])) {
+                $counts[$modname]++;
+            } else {
+                $counts['other']++;
+            }
+        }
+
+        // Count actual video files stored in resource modules
+        $sql = "SELECT COUNT(f.id)
+                FROM {files} f
+                JOIN {course_modules} cm ON cm.id = f.itemid
+                JOIN {modules} m ON m.id = cm.module
+                WHERE cm.course = :courseid
+                  AND m.name = 'resource'
+                  AND f.component = 'mod_resource'
+                  AND f.filearea = 'content'
+                  AND f.mimetype LIKE 'video/%'
+                  AND f.filename != '.'";
+        $counts['video'] = (int)$DB->count_records_sql($sql, ['courseid' => $courseid]);
+
+        return $counts;
+    }
+
+    /**
+     * Get comprehensive stats for a course (used in dashboard table + export).
+     */
+    public static function get_course_full_stats($courseid) {
         global $CFG;
         require_once($CFG->libdir . '/completionlib.php');
-        $course = \get_course($courseid);
-        $context = \context_course::instance($courseid);
 
-        // Participation — exclude non-students (teachers/managers)
+        $course   = \get_course($courseid);
+        $context  = \context_course::instance($courseid);
+        $lecturer = self::get_course_lecturer($courseid);
+        $modcounts = self::get_module_counts($courseid);
+
+        // Students only (not teachers)
         $enrolled_users = \get_enrolled_users($context, '', 0, 'u.*', null, 0, 0, true);
         $total_students = count($enrolled_users);
-        $active_days_limit = time() - (7 * 24 * 60 * 60);
-        $active_students = 0;
 
-        foreach ($enrolled_users as $user) {
-            if ($user->lastaccess > $active_days_limit) {
-                $active_students++;
+        $active_cutoff  = time() - (7 * 24 * 60 * 60);
+        $active_count   = 0;
+        foreach ($enrolled_users as $u) {
+            if ($u->lastaccess > $active_cutoff) {
+                $active_count++;
             }
         }
 
         // Completion
-        $completion = new \completion_info($course);
+        $completion      = new \completion_info($course);
         $completed_count = 0;
-        foreach ($enrolled_users as $user) {
-            if ($completion->is_course_complete($user->id)) {
+        foreach ($enrolled_users as $u) {
+            if ($completion->is_course_complete($u->id)) {
                 $completed_count++;
             }
         }
 
-        // Module summary
-        $modinfo = \get_fast_modinfo($course);
-        $total_modules = 0;
-        $hidden_modules = 0;
-        foreach ($modinfo->get_cms() as $cm) {
-            $total_modules++;
-            if (!$cm->visible) {
-                $hidden_modules++;
-            }
-        }
+        $completion_rate = $total_students > 0
+            ? round(($completed_count / $total_students) * 100, 1)
+            : 0;
 
         return [
-            'total_students'  => $total_students,
-            'active_students' => $active_students,
-            'inactive_students' => $total_students - $active_students,
-            'completion_rate' => $total_students > 0
-                ? round(($completed_count / $total_students) * 100, 2)
-                : 0,
-            'total_modules'   => $total_modules,
-            'hidden_modules'  => $hidden_modules,
+            'courseid'          => $courseid,
+            'fullname'          => $course->fullname,
+            'shortname'         => $course->shortname,
+
+            // Lecturer
+            'lecturer_name'     => $lecturer ? \fullname($lecturer) : 'N/A',
+            'lecturer_email'    => $lecturer ? $lecturer->email : 'N/A',
+            'lecturer_lastaccess' => $lecturer && $lecturer->lastaccess
+                ? \userdate($lecturer->lastaccess, '%d %b %Y %H:%M')
+                : 'Never',
+            'lecturer_lastaccess_ts' => $lecturer ? (int)$lecturer->lastaccess : 0,
+
+            // Students
+            'total_students'    => $total_students,
+            'active_students'   => $active_count,
+            'inactive_students' => $total_students - $active_count,
+            'completed_students'=> $completed_count,
+            'completion_rate'   => $completion_rate,
+
+            // Modules
+            'total_modules'     => $modcounts['total'],
+            'assignments'       => $modcounts['assign'],
+            'quizzes'           => $modcounts['quiz'],
+            'forums'            => $modcounts['forum'],
+            'files'             => $modcounts['resource'],
+            'urls'              => $modcounts['url'],
+            'pages'             => $modcounts['page'],
+            'videos'            => $modcounts['video'],
+            'other_modules'     => $modcounts['other'],
+        ];
+    }
+
+    /**
+     * Get analytics metrics for a specific course (used in detail page).
+     */
+    public static function get_course_metrics($courseid) {
+        $s = self::get_course_full_stats($courseid);
+        return [
+            'total_students'    => $s['total_students'],
+            'active_students'   => $s['active_students'],
+            'inactive_students' => $s['inactive_students'],
+            'completion_rate'   => $s['completion_rate'],
+            'total_modules'     => $s['total_modules'],
+            'hidden_modules'    => 0,
         ];
     }
 
     /**
      * Get detailed section and activity data for a course.
-     *
-     * @param int $courseid
-     * @return array
      */
     public static function get_section_details($courseid) {
         $course  = \get_course($courseid);
@@ -129,7 +226,7 @@ class course_manager {
 
         foreach ($sections as $section) {
             if ($section->section == 0 && empty($modinfo->sections[0])) {
-                continue; // Skip empty general section 0
+                continue;
             }
 
             $modules = [];
@@ -138,7 +235,7 @@ class course_manager {
                     $cm = $modinfo->get_cm($cmid);
                     $modules[] = [
                         'name'       => $cm->name,
-                        'type'       => $cm->modname,
+                        'type'       => ucfirst($cm->modname),
                         'visible'    => (bool) $cm->visible,
                         'completion' => $cm->completion != COMPLETION_TRACKING_NONE,
                         'url'        => $cm->url ? $cm->url->out() : '',
@@ -160,15 +257,11 @@ class course_manager {
 
     /**
      * Get list of students with participation data.
-     *
-     * @param int $courseid
-     * @return array
      */
     public static function get_student_list($courseid) {
         $context = \context_course::instance($courseid);
-        // get_enrolled_users filters by actual enrolment
-        $users = \get_enrolled_users($context, '', 0, 'u.*', 'u.lastname, u.firstname');
-        $data  = [];
+        $users   = \get_enrolled_users($context, '', 0, 'u.*', 'u.lastname, u.firstname');
+        $data    = [];
 
         foreach ($users as $user) {
             $data[] = [

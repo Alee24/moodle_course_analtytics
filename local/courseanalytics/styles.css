@@ -1,69 +1,171 @@
-/* Course Analytics Premium Styling */
-.local_courseanalytics_dashboard, .local_courseanalytics_details {
-    padding: 20px;
+/* =================================================
+   Course Analytics – Premium Dashboard Styles
+   Developed by KKDES | https://kkdes.co.ke/
+   ================================================= */
+
+.local_courseanalytics_dashboard {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
-.local_courseanalytics_dashboard h1 {
+/* Page title */
+.ca-page-title {
+    font-size: 1.7rem;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 30px;
+    color: #1e3a5f;
+    margin-bottom: 0;
 }
 
-.local_courseanalytics_dashboard .card {
+/* ---- Stat Cards ---- */
+.ca-stat-card {
     border: none;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    transition: transform .2s;
 }
 
-.local_courseanalytics_dashboard .card:hover {
-    transform: translateY(-5px);
+.ca-stat-card:hover {
+    transform: translateY(-4px);
 }
 
-.local_courseanalytics_dashboard .table thead th {
-    background-color: #f8f9fa;
-    border-top: none;
+.ca-stat-icon {
+    font-size: 2rem;
+    opacity: .85;
+    margin-bottom: 8px;
+}
+
+.ca-stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.ca-stat-label {
+    font-size: .8rem;
+    opacity: .9;
+    margin-top: 4px;
     text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
+    letter-spacing: .5px;
 }
 
-.local_courseanalytics_dashboard .btn-info {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2980b9 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #1a7a4a 0%, #27ae60 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #2171a7 0%, #00bcd4 100%);
+}
+
+/* ---- Generic card ---- */
+.ca-card {
     border: none;
-    border-radius: 20px;
-    padding: 5px 15px;
-}
-
-/* Charts container */
-canvas {
-    max-height: 300px;
-}
-
-/* Metric Cards */
-.local_courseanalytics_details .card {
     border-radius: 12px;
-    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
-.local_courseanalytics_details .bg-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; }
-.local_courseanalytics_details .bg-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important; }
-.local_courseanalytics_details .bg-info { background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%) !important; }
-.local_courseanalytics_details .bg-warning { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%) !important; }
-
-/* Tabs */
-.nav-tabs .nav-link {
-    border: none;
-    color: #666;
+.ca-card-header {
+    background: #1e3a5f;
+    color: #fff;
     font-weight: 600;
+    font-size: .95rem;
+    padding: .75rem 1rem;
 }
 
-.nav-tabs .nav-link.active {
-    color: #007bff;
-    border-bottom: 3px solid #007bff;
+/* ---- Main Table ---- */
+.ca-table {
+    font-size: .82rem;
+    white-space: nowrap;
+}
+
+.ca-table th,
+.ca-table td {
+    vertical-align: middle !important;
+    padding: .45rem .65rem;
+}
+
+.ca-thead-primary th {
+    background: #1e3a5f;
+    color: #fff;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    border-color: #2c4e80;
+}
+
+.ca-thead-secondary th {
+    background: #2c4e80;
+    color: #d6e4ff;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    border-color: #3a5e90;
+}
+
+.ca-table tbody tr:hover {
+    background-color: #eef4fd !important;
+}
+
+/* Course link */
+.ca-course-link {
+    color: #1e3a5f;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ca-course-link:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Last access cell */
+.ca-lastaccess {
+    color: #555;
+    font-size: .78rem;
+}
+
+/* Completion badge */
+.ca-pct-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: #fff;
+    font-weight: 700;
+    font-size: .8rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    min-width: 46px;
+    text-align: center;
+}
+
+/* Detail button */
+.ca-btn-detail {
+    border-radius: 20px;
+    font-size: .78rem;
+    padding: 3px 12px;
+}
+
+/* Badges */
+.badge-info {
+    background-color: #2196F3;
+}
+
+.badge-success {
+    background-color: #27ae60;
+}
+
+.badge-warning {
+    background-color: #f39c12;
+    color: #fff;
 }
 
 /* Footer */
-footer p {
-    font-size: 0.9rem;
+footer.border-top {
+    border-color: #dee2e6 !important;
 }
