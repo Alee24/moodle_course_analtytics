@@ -1,0 +1,69 @@
+/* Course Analytics Premium Styling */
+.local_courseanalytics_dashboard, .local_courseanalytics_details {
+    padding: 20px;
+}
+
+.local_courseanalytics_dashboard h1 {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.local_courseanalytics_dashboard .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.local_courseanalytics_dashboard .card:hover {
+    transform: translateY(-5px);
+}
+
+.local_courseanalytics_dashboard .table thead th {
+    background-color: #f8f9fa;
+    border-top: none;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.local_courseanalytics_dashboard .btn-info {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+}
+
+/* Charts container */
+canvas {
+    max-height: 300px;
+}
+
+/* Metric Cards */
+.local_courseanalytics_details .card {
+    border-radius: 12px;
+    border: none;
+}
+
+.local_courseanalytics_details .bg-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; }
+.local_courseanalytics_details .bg-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important; }
+.local_courseanalytics_details .bg-info { background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%) !important; }
+.local_courseanalytics_details .bg-warning { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%) !important; }
+
+/* Tabs */
+.nav-tabs .nav-link {
+    border: none;
+    color: #666;
+    font-weight: 600;
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+/* Footer */
+footer p {
+    font-size: 0.9rem;
+}

@@ -1,0 +1,120 @@
+<div class="local_courseanalytics_details">
+    <div class="mb-4">
+        <a href="{{urls.back}}" class="btn btn-outline-secondary">{{#str}} back {{/str}}</a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} students, local_courseanalytics {{/str}}</h5>
+                    <p class="card-text h2">{{metrics.total_students}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} active_students, local_courseanalytics {{/str}}</h5>
+                    <p class="card-text h2">{{metrics.active_students}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} completion, local_courseanalytics {{/str}} %</h5>
+                    <p class="card-text h2">{{metrics.completion_rate}}%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">{{#str}} activities_resources, local_courseanalytics {{/str}}</h5>
+                    <p class="card-text h2">{{metrics.total_modules}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" id="courseAnalyticsTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="content-tab" data-toggle="tab" href="#content" role="tab">{{#str}} weekly_breakdown, local_courseanalytics {{/str}}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="students-tab" data-toggle="tab" href="#students" role="tab">{{#str}} students, local_courseanalytics {{/str}}</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="courseAnalyticsTabsContent">
+        <div class="tab-pane fade show active" id="content" role="tabpanel">
+            {{#sections}}
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                    <strong>{{name}}</strong>
+                    {{#is_empty}}<span class="badge badge-warning">Empty Section</span>{{/is_empty}}
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm m-0">
+                        <thead>
+                            <tr>
+                                <th>{{#str}} activityname, local_courseanalytics {{/str}}</th>
+                                <th>{{#str}} module_type, local_courseanalytics {{/str}}</th>
+                                <th>{{#str}} visibility, local_courseanalytics {{/str}}</th>
+                                <th>{{#str}} completion_enabled, local_courseanalytics {{/str}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#modules}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td>{{type}}</td>
+                                <td>{{#visible}}Visible{{/visible}}{{^visible}}Hidden{{/visible}}</td>
+                                <td>{{#completion}}Yes{{/completion}}{{^completion}}No{{/completion}}</td>
+                            </tr>
+                            {{/modules}}
+                            {{^modules}}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No activities found in this section.</td>
+                            </tr>
+                            {{/modules}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {{/sections}}
+        </div>
+
+        <div class="tab-pane fade" id="students" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>{{#str}} lastaccess, local_courseanalytics {{/str}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#students}}
+                                <tr>
+                                    <td>{{fullname}}</td>
+                                    <td>{{email}}</td>
+                                    <td>{{lastaccess}}</td>
+                                </tr>
+                                {{/students}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 text-center text-muted">
+        <p>{{{footer_text}}}</p>
+    </footer>
+</div>
