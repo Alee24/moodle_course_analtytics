@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<XMLDB PATH="local/courseanalytics/db" VERSION="20240520" COMMENT="XMLDB file for local_courseanalytics"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
-    <TABLES>
-        <TABLE NAME="local_courseanalytics_stats" COMMENT="Summary statistics for courses">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Course ID reference"/>
-                <FIELD NAME="stat_date" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Timestamp of the stats date"/>
-                <FIELD NAME="student_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-                <FIELD NAME="active_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-                <FIELD NAME="completion_rate" TYPE="number" LENGTH="10" DECIMALS="2" NOTNULL="true" DEFAULT="0.00"/>
-                <FIELD NAME="module_count" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="course_idx" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-    </TABLES>
+  <TABLES>
+    <TABLE NAME="local_courseanalytics_stats" COMMENT="Stores daily aggregated analytics statistics per course">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Primary key"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course ID reference"/>
+        <FIELD NAME="stat_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Unix timestamp of the statistics date"/>
+        <FIELD NAME="student_count" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="Total enrolled students"/>
+        <FIELD NAME="active_count" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="Number of active students in last 7 days"/>
+        <FIELD NAME="completion_rate" TYPE="number" LENGTH="10" DECIMALS="2" NOTNULL="true" SEQUENCE="false" DEFAULT="0.00" COMMENT="Course completion rate percentage"/>
+        <FIELD NAME="module_count" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" DEFAULT="0" COMMENT="Total number of course modules"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
 </XMLDB>
