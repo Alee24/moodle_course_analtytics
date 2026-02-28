@@ -5,6 +5,10 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Course Manager class for fetching and filtering courses.
+ *
+ * @package    local_courseanalytics
+ * @copyright  2024 KKDES <https://kkdes.co.ke/>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_manager {
 
@@ -29,9 +33,9 @@ class course_manager {
             $params['categoryid'] = $categoryid;
         }
 
-        if (!is_siteadmin()) {
-            // If not admin, only show courses where user has teacher role
-            $user_courses = enrol_get_all_users_courses($USER->id);
+        if (!\is_siteadmin()) {
+            // If not admin, only show courses where user is enrolled
+            $user_courses = \enrol_get_all_users_courses($USER->id);
             if (empty($user_courses)) {
                 return [];
             }
@@ -62,15 +66,13 @@ class course_manager {
      * @return array
      */
     public static function get_course_metrics($courseid) {
-        global $DB;
-
-        $course = get_course($courseid);
+        $course = \get_course($courseid);
         $context = \context_course::instance($courseid);
 
-        // Participation
-        $enrolled_users = enrol_get_enrolled_users($context);
+        // Participation — exclude non-students (teachers/managers)
+        $enrolled_users = \get_enrolled_users($context, '', 0, 'u.*', null, 0, 0, true);
         $total_students = count($enrolled_users);
-        $active_days_limit = time() - (7 * 24 * 60 * 60); // 7 days active limit
+        $active_days_limit = time() - (7 * 24 * 60 * 60);
         $active_students = 0;
 
         foreach ($enrolled_users as $user) {
@@ -89,7 +91,7 @@ class course_manager {
         }
 
         // Module summary
-        $modinfo = get_fast_modinfo($course);
+        $modinfo = \get_fast_modinfo($course);
         $total_modules = 0;
         $hidden_modules = 0;
         foreach ($modinfo->get_cms() as $cm) {
@@ -100,12 +102,14 @@ class course_manager {
         }
 
         return [
-            'total_students' => $total_students,
+            'total_students'  => $total_students,
             'active_students' => $active_students,
             'inactive_students' => $total_students - $active_students,
-            'completion_rate' => $total_students > 0 ? round(($completed_count / $total_students) * 100, 2) : 0,
-            'total_modules' => $total_modules,
-            'hidden_modules' => $hidden_modules,
+            'completion_rate' => $total_students > 0
+                ? round(($completed_count / $total_students) * 100, 2)
+                : 0,
+            'total_modules'   => $total_modules,
+            'hidden_modules'  => $hidden_modules,
         ];
     }
 
@@ -116,32 +120,35 @@ class course_manager {
      * @return array
      */
     public static function get_section_details($courseid) {
-        $course = get_course($courseid);
-        $modinfo = get_fast_modinfo($course);
+        $course  = \get_course($courseid);
+        $modinfo = \get_fast_modinfo($course);
         $sections = $modinfo->get_section_info_all();
         $data = [];
 
         foreach ($sections as $section) {
-            if ($section->section == 0 && empty($modinfo->sections[0])) continue; // Skip empty section 0
+            if ($section->section == 0 && empty($modinfo->sections[0])) {
+                continue; // Skip empty general section 0
+            }
 
             $modules = [];
             if (isset($modinfo->sections[$section->section])) {
                 foreach ($modinfo->sections[$section->section] as $cmid) {
                     $cm = $modinfo->get_cm($cmid);
                     $modules[] = [
-                        'name' => $cm->name,
-                        'type' => $cm->modname,
-                        'visible' => $cm->visible,
+                        'name'       => $cm->name,
+                        'type'       => $cm->modname,
+                        'visible'    => (bool) $cm->visible,
                         'completion' => $cm->completion != COMPLETION_TRACKING_NONE,
-                        'url' => $cm->url ? $cm->url->out() : '',
+                        'url'        => $cm->url ? $cm->url->out() : '',
                     ];
                 }
             }
 
             $data[] = [
-                'section' => $section->section,
-                'name' => $section->name ?: get_string('sectionname', 'format_'.$course->format) . ' ' . $section->section,
-                'modules' => $modules,
+                'section'  => $section->section,
+                'name'     => $section->name
+                    ?: \get_string('sectionname', 'format_' . $course->format) . ' ' . $section->section,
+                'modules'  => $modules,
                 'is_empty' => empty($modules),
             ];
         }
@@ -150,22 +157,24 @@ class course_manager {
     }
 
     /**
-     * Get list of students with their participation metrics.
+     * Get list of students with participation data.
      *
      * @param int $courseid
      * @return array
      */
     public static function get_student_list($courseid) {
-        global $DB;
         $context = \context_course::instance($courseid);
-        $users = enrol_get_enrolled_users($context, 'mod/course:view', 0, 'u.*', 'u.lastname, u.firstname');
-        $data = [];
+        // get_enrolled_users filters by actual enrolment
+        $users = \get_enrolled_users($context, '', 0, 'u.*', 'u.lastname, u.firstname');
+        $data  = [];
 
         foreach ($users as $user) {
             $data[] = [
-                'fullname' => fullname($user),
-                'lastaccess' => $user->lastaccess ? userdate($user->lastaccess) : get_string('never'),
-                'email' => $user->email,
+                'fullname'   => \fullname($user),
+                'lastaccess' => $user->lastaccess
+                    ? \userdate($user->lastaccess)
+                    : \get_string('never'),
+                'email'      => $user->email,
             ];
         }
 
