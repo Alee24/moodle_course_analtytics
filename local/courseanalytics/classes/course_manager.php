@@ -57,22 +57,34 @@ class course_manager {
      * Get the lecturers (strictly editing teacher) for a course.
      */
     public static function get_course_lecturers($courseid) {
-        global $DB;
+        global $DB, $CFG;
+
+        $params = [
+            'ctxlevel' => CONTEXT_COURSE,
+            'courseid' => $courseid,
+        ];
+
+        // Moodle native way of finding which roles are considered "teachers"
+        if (!empty($CFG->coursecontact)) {
+            $roleids = explode(',', $CFG->coursecontact);
+            list($rolesql, $roleparams) = $DB->get_in_or_equal($roleids, SQL_PARAMS_NAMED, 'r');
+            $rolecheck = "ra.roleid $rolesql";
+            $params = array_merge($params, $roleparams);
+        } else {
+            // Fallback for custom university shortnames
+            $rolecheck = "r.shortname IN ('editingteacher', 'teacher', 'coursecreator', 'lecturer', 'facilitator', 'tutor', 'instructor')";
+        }
 
         $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.lastaccess
                 FROM {user} u
                 JOIN {role_assignments} ra ON ra.userid = u.id
                 JOIN {role} r ON r.id = ra.roleid
                 JOIN {context} ctx ON ctx.id = ra.contextid
-                WHERE ctx.contextlevel = :ctxlevel
-                  AND ctx.instanceid = :courseid
-                  AND r.shortname = 'editingteacher'
+                WHERE (ctx.contextlevel = :ctxlevel AND ctx.instanceid = :courseid)
+                  AND ($rolecheck)
                 ORDER BY u.lastaccess DESC";
 
-        $lecturers = $DB->get_records_sql($sql, [
-            'ctxlevel' => CONTEXT_COURSE,
-            'courseid' => $courseid,
-        ]);
+        $lecturers = $DB->get_records_sql($sql, $params);
 
         return empty($lecturers) ? [] : array_values($lecturers);
     }
