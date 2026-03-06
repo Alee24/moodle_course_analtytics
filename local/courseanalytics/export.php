@@ -116,8 +116,5 @@ foreach ($courses as $course) {
 $sheet->write_string($row, 0,  'TOTAL', $format_header);
 $sheet->write_string($row, 1,  count($courses) . ' courses', $format_header);
 
-// ---- Freeze top rows ----
-$sheet->freeze_panes($header_row + 1, 2);
-
 // ---- Send to browser ----
 $workbook->close();
