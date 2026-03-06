@@ -235,9 +235,25 @@ class course_manager {
             if (isset($modinfo->sections[$section->section])) {
                 foreach ($modinfo->sections[$section->section] as $cmid) {
                     $cm = $modinfo->get_cm($cmid);
+                    $modname = $cm->modname;
+
+                    // Map module type to a FontAwesome icon
+                    $icon = 'fa-file-o';
+                    if ($modname === 'assign') $icon = 'fa-tasks text-primary';
+                    elseif ($modname === 'quiz') $icon = 'fa-question-circle text-warning';
+                    elseif ($modname === 'forum') $icon = 'fa-comments-o text-success';
+                    elseif ($modname === 'folder') $icon = 'fa-folder-open-o text-warning';
+                    elseif ($modname === 'url') $icon = 'fa-link text-info';
+                    elseif ($modname === 'page') $icon = 'fa-file-text-o text-secondary';
+                    elseif ($modname === 'resource') $icon = 'fa-file-pdf-o text-danger';
+                    elseif ($modname === 'book') $icon = 'fa-book text-success';
+                    elseif ($modname === 'chat') $icon = 'fa-comments text-primary';
+                    elseif ($modname === 'feedback' || $modname === 'choice') $icon = 'fa-check-square-o text-success';
+
                     $modules[] = [
                         'name'       => $cm->name,
-                        'type'       => ucfirst($cm->modname),
+                        'type'       => ucfirst($modname),
+                        'icon'       => $icon,
                         'visible'    => (bool) $cm->visible,
                         'completion' => $cm->completion != COMPLETION_TRACKING_NONE,
                         'url'        => $cm->url ? $cm->url->out() : '',

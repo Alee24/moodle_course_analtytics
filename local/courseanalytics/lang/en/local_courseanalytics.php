@@ -35,6 +35,7 @@ $string['view_details'] = 'View Details';
 $string['loading'] = 'Loading...';
 $string['no_courses_found'] = 'No courses found.';
 $string['weekly_breakdown'] = 'Weekly Breakdown';
+$string['activityname'] = 'Activity / Resource Name';
 $string['module_type'] = 'Type';
 $string['visibility'] = 'Visibility';
 $string['completion_enabled'] = 'Completion Enabled';

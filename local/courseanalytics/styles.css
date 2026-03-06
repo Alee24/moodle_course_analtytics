@@ -3,8 +3,10 @@
    Developed by KKDES | https://kkdes.co.ke/
    ================================================= */
 
-.local_courseanalytics_dashboard {
+.local_courseanalytics_dashboard,
+.local_courseanalytics_details {
     font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    color: #2c3e50;
 }
 
 /* Page title */
@@ -20,31 +22,32 @@
     border: none;
     border-radius: 14px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-    transition: transform .2s;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ca-stat-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
 }
 
 .ca-stat-icon {
-    font-size: 2rem;
-    opacity: .85;
-    margin-bottom: 8px;
+    font-size: 2.2rem;
+    opacity: 0.85;
+    margin-bottom: 10px;
 }
 
 .ca-stat-value {
-    font-size: 2.2rem;
-    font-weight: 700;
-    line-height: 1;
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.1;
 }
 
 .ca-stat-label {
-    font-size: .8rem;
-    opacity: .9;
-    margin-top: 4px;
+    font-size: 0.85rem;
+    opacity: 0.95;
+    margin-top: 5px;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .bg-gradient-primary {
@@ -63,7 +66,29 @@
     background: linear-gradient(135deg, #2171a7 0%, #00bcd4 100%);
 }
 
-/* ---- Generic card ---- */
+/* ---- Navigation Tabs/Pills ---- */
+.ca-nav-pills {
+    background: transparent;
+}
+
+.ca-nav-pills .nav-link {
+    border-radius: 8px;
+    color: #1e3a5f;
+    background-color: #f8f9fa;
+    margin: 0 5px;
+    transition: all 0.2s;
+}
+
+.ca-nav-pills .nav-link:hover {
+    background-color: #e2e8f0;
+}
+
+.ca-nav-pills .nav-link.active {
+    background-color: #1e3a5f;
+    color: white;
+}
+
+/* ---- Generic cards ---- */
 .ca-card {
     border: none;
     border-radius: 12px;
@@ -75,37 +100,90 @@
     background: #1e3a5f;
     color: #fff;
     font-weight: 600;
-    font-size: .95rem;
-    padding: .75rem 1rem;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+}
+
+/* ---- Specific Details CSS ---- */
+.ca-section-card {
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.ca-section-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #edf2f7;
+    padding: 1.25rem 1.5rem;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.ca-empty-state {
+    background-color: #f8fafc;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.ca-module-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    padding: 1rem;
+}
+
+.ca-module-row td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ca-module-row:last-child td {
+    border-bottom: none;
+}
+
+.ca-module-link {
+    color: #1e3a5f;
+    transition: color 0.1s ease;
+}
+
+.ca-module-link:hover {
+    color: #3498db;
+}
+
+.ca-badge-type {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.65rem;
+    padding: 4px 8px;
 }
 
 /* ---- Main Table ---- */
 .ca-table {
-    font-size: .82rem;
+    font-size: 0.82rem;
     white-space: nowrap;
 }
 
 .ca-table th,
 .ca-table td {
     vertical-align: middle !important;
-    padding: .45rem .65rem;
+    padding: 0.45rem 0.65rem;
 }
 
 .ca-thead-primary th {
     background: #1e3a5f;
     color: #fff;
-    font-size: .78rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: .4px;
+    letter-spacing: 0.4px;
     border-color: #2c4e80;
 }
 
 .ca-thead-secondary th {
     background: #2c4e80;
     color: #d6e4ff;
-    font-size: .75rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: .3px;
+    letter-spacing: 0.3px;
     border-color: #3a5e90;
 }
 
@@ -113,7 +191,7 @@
     background-color: #eef4fd !important;
 }
 
-/* Course link */
+/* Dashboard Course Link */
 .ca-course-link {
     color: #1e3a5f;
     font-weight: 600;
@@ -125,10 +203,10 @@
     text-decoration: underline;
 }
 
-/* Last access cell */
+/* User Last Access cell */
 .ca-lastaccess {
     color: #555;
-    font-size: .78rem;
+    font-size: 0.78rem;
 }
 
 .ca-multi-item {
@@ -146,7 +224,7 @@
     background: linear-gradient(135deg, #27ae60, #2ecc71);
     color: #fff;
     font-weight: 700;
-    font-size: .8rem;
+    font-size: 0.8rem;
     padding: 2px 8px;
     border-radius: 20px;
     min-width: 46px;
@@ -156,7 +234,7 @@
 /* Detail button */
 .ca-btn-detail {
     border-radius: 20px;
-    font-size: .78rem;
+    font-size: 0.78rem;
     padding: 3px 12px;
 }
 
@@ -175,6 +253,6 @@
 }
 
 /* Footer */
-footer.border-top {
-    border-color: #dee2e6 !important;
+footer.ca-footer.border-top {
+    border-color: #e2e8f0 !important;
 }
