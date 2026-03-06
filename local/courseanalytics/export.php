@@ -29,8 +29,8 @@ $sheet    = $workbook->add_worksheet('Course Analytics');
 // ---- Define styles ----
 $format_header  = $workbook->add_format(['bold' => 1, 'bg_color' => '#1e3a5f', 'color' => '#ffffff', 'border' => 1, 'size' => 11, 'align' => 'centre', 'v_align' => 'vcenter', 'text_wrap' => 1]);
 $format_title   = $workbook->add_format(['bold' => 1, 'size' => 14, 'color' => '#1e3a5f']);
-$format_even    = $workbook->add_format(['bg_color' => '#f0f4f8', 'border' => 1, 'size' => 10]);
-$format_odd     = $workbook->add_format(['bg_color' => '#ffffff', 'border' => 1, 'size' => 10]);
+$format_even    = $workbook->add_format(['bg_color' => '#f0f4f8', 'border' => 1, 'size' => 10, 'text_wrap' => 1]);
+$format_odd     = $workbook->add_format(['bg_color' => '#ffffff', 'border' => 1, 'size' => 10, 'text_wrap' => 1]);
 $format_number  = $workbook->add_format(['bg_color' => '#ffffff', 'border' => 1, 'size' => 10, 'align' => 'centre']);
 $format_numbere = $workbook->add_format(['bg_color' => '#f0f4f8', 'border' => 1, 'size' => 10, 'align' => 'centre']);
 $format_pct     = $workbook->add_format(['bg_color' => '#e8f5e9', 'border' => 1, 'size' => 10, 'align' => 'centre', 'bold' => 1]);
@@ -87,12 +87,21 @@ foreach ($courses as $course) {
     $fmtn = $is_even ? $format_numbere  : $format_number;
     $fmtc = $is_even ? $format_pcte     : $format_pct;
 
+    $lecturer_names = [];
+    $lecturer_emails = [];
+    $lecturer_lastaccess = [];
+    foreach ($stats['lecturers'] as $l) {
+        $lecturer_names[] = $l['name'];
+        $lecturer_emails[] = $l['email'];
+        $lecturer_lastaccess[] = $l['lastaccess'];
+    }
+
     $sheet->write_number($row, 0,  $num,                          $fmtn);
     $sheet->write_string($row, 1,  $stats['fullname'],            $fmt);
     $sheet->write_string($row, 2,  $course->categoryname,         $fmt);
-    $sheet->write_string($row, 3,  $stats['lecturer_name'],       $fmt);
-    $sheet->write_string($row, 4,  $stats['lecturer_email'],      $fmt);
-    $sheet->write_string($row, 5,  $stats['lecturer_lastaccess'], $fmt);
+    $sheet->write_string($row, 3,  implode("\n", $lecturer_names),       $fmt);
+    $sheet->write_string($row, 4,  implode("\n", $lecturer_emails),      $fmt);
+    $sheet->write_string($row, 5,  implode("\n", $lecturer_lastaccess),  $fmt);
     $sheet->write_number($row, 6,  $stats['total_students'],      $fmtn);
     $sheet->write_number($row, 7,  $stats['active_students'],     $fmtn);
     $sheet->write_number($row, 8,  $stats['inactive_students'],   $fmtn);

@@ -54,10 +54,8 @@ if (!$require_category) {
             'categoryname'           => $course->categoryname,
             'url'                    => (new moodle_url('/local/courseanalytics/course.php', ['id' => $course->id]))->out(false),
 
-            // Lecturer
-            'lecturer_name'          => $stats['lecturer_name'],
-            'lecturer_email'         => $stats['lecturer_email'],
-            'lecturer_lastaccess'    => $stats['lecturer_lastaccess'],
+            // Lecturers
+            'lecturers'              => $stats['lecturers'],
 
             // Students
             'total_students'         => $stats['total_students'],

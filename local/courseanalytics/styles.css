@@ -131,6 +131,15 @@
     font-size: .78rem;
 }
 
+.ca-multi-item {
+    padding: 3px 0;
+}
+
+.ca-multi-item:not(:last-child) {
+    border-bottom: 1px dashed #e2e8f0;
+    margin-bottom: 3px;
+}
+
 /* Completion badge */
 .ca-pct-badge {
     display: inline-block;

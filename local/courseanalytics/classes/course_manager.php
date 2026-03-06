@@ -54,9 +54,9 @@ class course_manager {
     }
 
     /**
-     * Get the primary lecturer (editing teacher) for a course.
+     * Get the lecturers (strictly editing teacher) for a course.
      */
-    public static function get_course_lecturer($courseid) {
+    public static function get_course_lecturers($courseid) {
         global $DB;
 
         $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.lastaccess
@@ -66,7 +66,7 @@ class course_manager {
                 JOIN {context} ctx ON ctx.id = ra.contextid
                 WHERE ctx.contextlevel = :ctxlevel
                   AND ctx.instanceid = :courseid
-                  AND r.shortname IN ('editingteacher','manager')
+                  AND r.shortname = 'editingteacher'
                 ORDER BY u.lastaccess DESC";
 
         $lecturers = $DB->get_records_sql($sql, [
@@ -74,10 +74,7 @@ class course_manager {
             'courseid' => $courseid,
         ]);
 
-        if (empty($lecturers)) {
-            return null;
-        }
-        return reset($lecturers); // Return first (most recently active)
+        return empty($lecturers) ? [] : array_values($lecturers);
     }
 
     /**
@@ -139,8 +136,18 @@ class course_manager {
 
         $course   = \get_course($courseid);
         $context  = \context_course::instance($courseid);
-        $lecturer = self::get_course_lecturer($courseid);
+        $lecturers = self::get_course_lecturers($courseid);
         $modcounts = self::get_module_counts($courseid);
+
+        // Format lecturers array
+        $formatted_lecturers = [];
+        foreach ($lecturers as $l) {
+            $formatted_lecturers[] = [
+                'name'       => \fullname($l),
+                'email'      => $l->email,
+                'lastaccess' => $l->lastaccess ? \userdate($l->lastaccess, '%d %b %Y %H:%M') : 'Never',
+            ];
+        }
 
         // Students only (not teachers)
         $enrolled_users = \get_enrolled_users($context, '', 0, 'u.*', null, 0, 0, true);
@@ -172,13 +179,8 @@ class course_manager {
             'fullname'          => $course->fullname,
             'shortname'         => $course->shortname,
 
-            // Lecturer
-            'lecturer_name'     => $lecturer ? \fullname($lecturer) : 'N/A',
-            'lecturer_email'    => $lecturer ? $lecturer->email : 'N/A',
-            'lecturer_lastaccess' => $lecturer && $lecturer->lastaccess
-                ? \userdate($lecturer->lastaccess, '%d %b %Y %H:%M')
-                : 'Never',
-            'lecturer_lastaccess_ts' => $lecturer ? (int)$lecturer->lastaccess : 0,
+            // Lecturers array
+            'lecturers'         => $formatted_lecturers,
 
             // Students
             'total_students'    => $total_students,

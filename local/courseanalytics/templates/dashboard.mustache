@@ -146,9 +146,24 @@
                             <td class="text-center text-muted small">{{@index}}</td>
                             <td><a href="{{url}}" class="ca-course-link">{{fullname}}</a></td>
                             <td><span class="badge badge-secondary">{{categoryname}}</span></td>
-                            <td class="small">{{lecturer_name}}</td>
-                            <td class="small"><a href="mailto:{{lecturer_email}}">{{lecturer_email}}</a></td>
-                            <td class="small ca-lastaccess">{{lecturer_lastaccess}}</td>
+                            <td class="small align-middle">
+                                {{#lecturers}}
+                                    <div class="ca-multi-item">{{name}}</div>
+                                {{/lecturers}}
+                                {{^lecturers}}<span class="text-muted">-</span>{{/lecturers}}
+                            </td>
+                            <td class="small align-middle">
+                                {{#lecturers}}
+                                    <div class="ca-multi-item"><a href="mailto:{{email}}">{{email}}</a></div>
+                                {{/lecturers}}
+                                {{^lecturers}}<span class="text-muted">-</span>{{/lecturers}}
+                            </td>
+                            <td class="small ca-lastaccess align-middle">
+                                {{#lecturers}}
+                                    <div class="ca-multi-item">{{lastaccess}}</div>
+                                {{/lecturers}}
+                                {{^lecturers}}<span class="text-muted">-</span>{{/lecturers}}
+                            </td>
                             <td class="text-center"><span class="badge badge-info">{{total_students}}</span></td>
                             <td class="text-center"><span class="badge badge-success">{{active_students}}</span></td>
                             <td class="text-center"><span class="badge badge-warning">{{inactive_students}}</span></td>
