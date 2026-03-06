@@ -72,6 +72,7 @@ if (!$require_category) {
             'videos'                 => $stats['videos'],
             'urls'                   => $stats['urls'],
             'pages'                  => $stats['pages'],
+            'h5p'                    => $stats['h5p'],
         ];
     }
 }

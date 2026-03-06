@@ -94,6 +94,7 @@ class course_manager {
             'page'     => 0,
             'folder'   => 0,
             'video'    => 0, // label + resource with video mime
+            'h5p'      => 0, // h5pactivity or hvp plugin
             'other'    => 0,
             'total'    => 0,
         ];
@@ -104,7 +105,10 @@ class course_manager {
         foreach ($modinfo->get_cms() as $cm) {
             $counts['total']++;
             $modname = $cm->modname;
-            if (isset($counts[$modname])) {
+            
+            if ($modname === 'h5pactivity' || $modname === 'hvp') {
+                $counts['h5p']++;
+            } elseif (isset($counts[$modname])) {
                 $counts[$modname]++;
             } else {
                 $counts['other']++;
@@ -197,6 +201,7 @@ class course_manager {
             'files'             => $modcounts['resource'],
             'urls'              => $modcounts['url'],
             'pages'             => $modcounts['page'],
+            'h5p'               => $modcounts['h5p'],
             'videos'            => $modcounts['video'],
             'other_modules'     => $modcounts['other'],
         ];
@@ -249,6 +254,7 @@ class course_manager {
                     elseif ($modname === 'book') $icon = 'fa-book text-success';
                     elseif ($modname === 'chat') $icon = 'fa-comments text-primary';
                     elseif ($modname === 'feedback' || $modname === 'choice') $icon = 'fa-check-square-o text-success';
+                    elseif ($modname === 'h5pactivity' || $modname === 'hvp') $icon = 'fa-play-circle text-info font-weight-bold';
 
                     $modules[] = [
                         'name'       => $cm->name,

@@ -56,6 +56,7 @@ $headers = [
     'Completed Students',
     'Completion Rate %',
     'Total Modules',
+    'H5P Interactions',
     'Assignments',
     'Quizzes',
     'Forums',
@@ -72,7 +73,7 @@ foreach ($headers as $col => $header) {
 }
 
 // ---- Column widths ----
-$widths = [5, 40, 20, 25, 30, 22, 12, 18, 15, 18, 15, 12, 12, 10, 10, 10, 10, 10, 10, 10];
+$widths = [5, 40, 20, 25, 30, 22, 12, 18, 15, 18, 15, 12, 15, 12, 10, 10, 10, 10, 10, 10, 10];
 foreach ($widths as $col => $width) {
     $sheet->set_column($col, $col, $width);
 }
@@ -108,14 +109,15 @@ foreach ($courses as $course) {
     $sheet->write_number($row, 9,  $stats['completed_students'],  $fmtn);
     $sheet->write_number($row, 10, $stats['completion_rate'],     $fmtc);
     $sheet->write_number($row, 11, $stats['total_modules'],       $fmtn);
-    $sheet->write_number($row, 12, $stats['assignments'],         $fmtn);
-    $sheet->write_number($row, 13, $stats['quizzes'],             $fmtn);
-    $sheet->write_number($row, 14, $stats['forums'],              $fmtn);
-    $sheet->write_number($row, 15, $stats['files'],               $fmtn);
-    $sheet->write_number($row, 16, $stats['videos'],              $fmtn);
-    $sheet->write_number($row, 17, $stats['urls'],                $fmtn);
-    $sheet->write_number($row, 18, $stats['pages'],               $fmtn);
-    $sheet->write_number($row, 19, $stats['other_modules'],       $fmtn);
+    $sheet->write_number($row, 12, $stats['h5p'],                 $fmtn);
+    $sheet->write_number($row, 13, $stats['assignments'],         $fmtn);
+    $sheet->write_number($row, 14, $stats['quizzes'],             $fmtn);
+    $sheet->write_number($row, 15, $stats['forums'],              $fmtn);
+    $sheet->write_number($row, 16, $stats['files'],               $fmtn);
+    $sheet->write_number($row, 17, $stats['videos'],              $fmtn);
+    $sheet->write_number($row, 18, $stats['urls'],                $fmtn);
+    $sheet->write_number($row, 19, $stats['pages'],               $fmtn);
+    $sheet->write_number($row, 20, $stats['other_modules'],       $fmtn);
 
     $row++;
     $num++;

@@ -120,7 +120,7 @@
                             <th rowspan="2" class="align-middle">Category</th>
                             <th colspan="3" class="text-center">Lecturer</th>
                             <th colspan="4" class="text-center">Students</th>
-                            <th colspan="7" class="text-center">Course Content</th>
+                            <th colspan="8" class="text-center">Course Content</th>
                             <th rowspan="2" class="align-middle text-center">Actions</th>
                         </tr>
                         <tr class="ca-thead-secondary">
@@ -131,6 +131,7 @@
                             <th>Active (7d)</th>
                             <th>Inactive</th>
                             <th>Completion %</th>
+                            <th><i class="fa fa-play-circle" title="H5P Interactive"></i> H5P</th>
                             <th><i class="fa fa-tasks" title="Assignments"></i> Assign</th>
                             <th><i class="fa fa-question-circle" title="Quizzes"></i> Quiz</th>
                             <th><i class="fa fa-comments" title="Forums"></i> Forum</th>
@@ -170,6 +171,7 @@
                             <td class="text-center">
                                 <span class="ca-pct-badge">{{completion_rate}}%</span>
                             </td>
+                            <td class="text-center font-weight-bold text-info">{{h5p}}</td>
                             <td class="text-center">{{assignments}}</td>
                             <td class="text-center">{{quizzes}}</td>
                             <td class="text-center">{{forums}}</td>
@@ -186,7 +188,7 @@
                         {{/courses}}
                         {{^has_courses}}
                         <tr>
-                            <td colspan="18" class="text-center py-4 text-muted">
+                            <td colspan="19" class="text-center py-4 text-muted">
                                 <i class="fa fa-inbox fa-2x mb-2"></i><br>No courses found.
                             </td>
                         </tr>
