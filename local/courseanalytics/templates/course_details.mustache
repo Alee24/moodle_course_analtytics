@@ -65,6 +65,22 @@
         </div>
     </div>
 
+    {{! ===== CHARTS ===== }}
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-6 col-lg-5 mb-3">
+            <div class="card shadow-sm border-0" style="border-radius: 12px; background: #fff;">
+                <div class="card-body text-center p-4">
+                    <h5 class="font-weight-bold mb-4" style="color: #4a4a4a; font-size: 1rem;">
+                        <i class="fa fa-pie-chart mr-2" style="color: #c00085;"></i> User Activity Breakdown
+                    </h5>
+                    <div style="position: relative; height: 260px; width: 100%; display: flex; justify-content: center;">
+                        <canvas id="courseParticipationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{! ===== TABS ===== }}
     <ul class="nav nav-pills ca-nav-pills mb-4 d-flex justify-content-center pl-0" id="courseAnalyticsTabs" role="tablist">
         <li class="nav-item w-50 max-w-sm">
@@ -196,3 +212,33 @@
         {{{footer_text}}}
     </footer>
 </div>
+
+{{#js}}
+require(['core/chartjs'], function(Chart) {
+    var ctxPart = document.getElementById('courseParticipationChart');
+    if (ctxPart) {
+        new Chart(ctxPart.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Active Students', 'Inactive Students'],
+                datasets: [{
+                    data: [{{metrics.active_students}}, {{metrics.inactive_students}}],
+                    backgroundColor: ['#2e9f5e', '#e58e26'],
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        position: 'bottom',
+                        labels: { padding: 20, font: { weight: 'bold' } }
+                    } 
+                }
+            }
+        });
+    }
+});
+{{/js}}
