@@ -50,7 +50,16 @@
                 <div class="card-body d-flex flex-column justify-content-center p-4">
                     <div class="ca-stat-icon mb-3"><i class="fa fa-cubes"></i></div>
                     <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.total_modules}}</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">TOTAL COURSE MODULES</div>
+                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">TOTAL RESOURCES / ACTIVITIES</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #8e44ad;">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <div class="ca-stat-icon mb-3"><i class="fa fa-clock-o"></i></div>
+                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.avg_time_spent}}</div>
+                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">AVG. TIME SPENT</div>
                 </div>
             </div>
         </div>
@@ -117,6 +126,7 @@
                                         <tr style="border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
                                             <th class="border-top-0 w-50 pl-4 text-muted font-weight-bold" style="font-size:0.75rem;">ACTIVITY / RESOURCE NAME</th>
                                             <th class="border-top-0 text-muted font-weight-bold" style="font-size:0.75rem;">TYPE</th>
+                                            <th class="border-top-0 text-center text-muted font-weight-bold" style="font-size:0.75rem;">VIEWS</th>
                                             <th class="border-top-0 text-center text-muted font-weight-bold" style="font-size:0.75rem;">VISIBILITY</th>
                                             <th class="border-top-0 text-center text-muted font-weight-bold" style="font-size:0.75rem;">COMPLETION ENABLED</th>
                                         </tr>
@@ -132,6 +142,9 @@
                                             </td>
                                             <td class="align-middle">
                                                 <span class="badge bg-white border border-secondary text-secondary ca-badge-type font-weight-bold px-2 py-1 shadow-sm">{{type}}</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-dark font-weight-bold" style="font-size: 1rem;"><i class="fa fa-eye mr-1 text-muted"></i> {{views}}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 {{#visible}}

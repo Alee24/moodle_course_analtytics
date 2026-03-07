@@ -144,6 +144,66 @@ class course_manager {
     }
 
     /**
+     * Helper to get average time spent and total views securely.
+     */
+    public static function get_time_and_views($courseid, $total_students) {
+        global $DB;
+        $views = 0;
+        $avg_time_str = "0m";
+        
+        try {
+            if ($DB->get_manager()->table_exists('logstore_standard_log')) {
+                $sql_views = "SELECT COUNT(id) FROM {logstore_standard_log} WHERE courseid = :courseid";
+                $views = $DB->count_records_sql($sql_views, ['courseid' => $courseid]);
+                
+                $sql_logs = "SELECT userid, timecreated FROM {logstore_standard_log} WHERE courseid = :courseid ORDER BY userid, timecreated ASC";
+                $rs = $DB->get_recordset_sql($sql_logs, ['courseid' => $courseid], 0, 250000);
+                
+                $total_time_seconds = 0;
+                $last_user = null;
+                $last_time = 0;
+                $session_timeout = 1800;
+                
+                foreach ($rs as $log) {
+                    if ($last_user === $log->userid) {
+                        $diff = $log->timecreated - $last_time;
+                        if ($diff < $session_timeout && $diff > 0) {
+                            $total_time_seconds += $diff;
+                        } else {
+                            $total_time_seconds += 120;
+                        }
+                    } else {
+                        $total_time_seconds += 120;
+                    }
+                    $last_user = $log->userid;
+                    $last_time = $log->timecreated;
+                }
+                $rs->close();
+                
+                if ($total_students > 0) {
+                    $avg_seconds = $total_time_seconds / $total_students;
+                    if ($avg_seconds < 60) {
+                        $avg_time_str = "< 1m";
+                    } else {
+                        $hours = floor($avg_seconds / 3600);
+                        $mins = floor(($avg_seconds % 3600) / 60);
+                        if ($hours > 0) {
+                            $avg_time_str = "{$hours}h {$mins}m";
+                        } else {
+                            $avg_time_str = "{$mins}m";
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {}
+        
+        return [
+            'views' => $views,
+            'avg_time' => $avg_time_str
+        ];
+    }
+
+    /**
      * Get comprehensive stats for a course (used in dashboard table + export).
      */
     public static function get_course_full_stats($courseid) {
@@ -171,24 +231,39 @@ class course_manager {
 
         $active_cutoff  = time() - (7 * 24 * 60 * 60);
         $active_count   = 0;
+
+        $completion = new \completion_info($course);
+        $modinfo = \get_fast_modinfo($course);
+        $tracked_activities = [];
+        foreach ($modinfo->get_cms() as $cm) {
+            if ($cm->completion != COMPLETION_TRACKING_NONE) {
+                $tracked_activities[] = $cm;
+            }
+        }
+
+        $total_completion_percentage = 0;
+
         foreach ($enrolled_users as $u) {
             if ($u->lastaccess > $active_cutoff) {
                 $active_count++;
             }
-        }
-
-        // Completion
-        $completion      = new \completion_info($course);
-        $completed_count = 0;
-        foreach ($enrolled_users as $u) {
-            if ($completion->is_course_complete($u->id)) {
-                $completed_count++;
+            if (count($tracked_activities) > 0) {
+                $comp = 0;
+                foreach ($tracked_activities as $cm) {
+                    $c_data = $completion->get_data($cm, true, $u->id);
+                    if ($c_data->completionstate == COMPLETION_COMPLETE || $c_data->completionstate == COMPLETION_COMPLETE_PASS) {
+                        $comp++;
+                    }
+                }
+                $total_completion_percentage += ($comp / count($tracked_activities)) * 100;
             }
         }
 
         $completion_rate = $total_students > 0
-            ? round(($completed_count / $total_students) * 100, 1)
+            ? round(($total_completion_percentage / $total_students), 1)
             : 0;
+
+        $time_views = self::get_time_and_views($courseid, $total_students);
 
         return [
             'courseid'          => $courseid,
@@ -206,6 +281,8 @@ class course_manager {
             'completion_rate'   => $completion_rate,
 
             // Modules
+            'total_views'       => $time_views['views'],
+            'avg_time_spent'    => $time_views['avg_time'],
             'total_modules'     => $modcounts['total'],
             'assignments'       => $modcounts['assign'],
             'quizzes'           => $modcounts['quiz'],
@@ -230,6 +307,9 @@ class course_manager {
             'inactive_students' => $s['inactive_students'],
             'completion_rate'   => $s['completion_rate'],
             'total_modules'     => $s['total_modules'],
+            'avg_time_spent'    => $s['avg_time_spent'],
+            'total_views'       => $s['total_views'],
+            'h5p'               => $s['h5p'],
             'hidden_modules'    => 0,
         ];
     }
@@ -242,6 +322,21 @@ class course_manager {
         $modinfo = \get_fast_modinfo($course);
         $sections = $modinfo->get_section_info_all();
         $data = [];
+
+        global $DB;
+        $view_counts = [];
+        try {
+            if ($DB->get_manager()->table_exists('logstore_standard_log')) {
+                $sql_views = "SELECT contextinstanceid AS cmid, COUNT(id) AS views 
+                        FROM {logstore_standard_log} 
+                        WHERE courseid = :courseid AND contextlevel = :ctxlevel 
+                        GROUP BY contextinstanceid";
+                $view_counts = $DB->get_records_sql($sql_views, [
+                    'courseid' => $courseid,
+                    'ctxlevel' => CONTEXT_MODULE
+                ]);
+            }
+        } catch (\Exception $e) {}
 
         foreach ($sections as $section) {
             if ($section->section == 0 && empty($modinfo->sections[0])) {
@@ -268,10 +363,13 @@ class course_manager {
                     elseif ($modname === 'feedback' || $modname === 'choice') $icon = 'fa-check-square-o text-success';
                     elseif ($modname === 'h5pactivity' || $modname === 'hvp') $icon = 'fa-play-circle text-info font-weight-bold';
 
+                    $cm_views = isset($view_counts[$cmid]) ? $view_counts[$cmid]->views : 0;
+                    
                     $modules[] = [
                         'name'       => $cm->name,
                         'type'       => ucfirst($modname),
                         'icon'       => $icon,
+                        'views'      => number_format($cm_views),
                         'visible'    => (bool) $cm->visible,
                         'completion' => $cm->completion != COMPLETION_TRACKING_NONE,
                         'url'        => $cm->url ? $cm->url->out() : '',

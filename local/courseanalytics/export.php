@@ -55,7 +55,9 @@ $headers = [
     'Inactive Students',
     'Completed Students',
     'Completion Rate %',
-    'Total Modules',
+    'Average Time Spent',
+    'Total Views',
+    'Total Resources / Activities',
     'H5P Interactions',
     'Assignments',
     'Quizzes',
@@ -108,16 +110,18 @@ foreach ($courses as $course) {
     $sheet->write_number($row, 8,  $stats['inactive_students'],   $fmtn);
     $sheet->write_number($row, 9,  $stats['completed_students'],  $fmtn);
     $sheet->write_number($row, 10, $stats['completion_rate'],     $fmtc);
-    $sheet->write_number($row, 11, $stats['total_modules'],       $fmtn);
-    $sheet->write_number($row, 12, $stats['h5p'],                 $fmtn);
-    $sheet->write_number($row, 13, $stats['assignments'],         $fmtn);
-    $sheet->write_number($row, 14, $stats['quizzes'],             $fmtn);
-    $sheet->write_number($row, 15, $stats['forums'],              $fmtn);
-    $sheet->write_number($row, 16, $stats['files'],               $fmtn);
-    $sheet->write_number($row, 17, $stats['videos'],              $fmtn);
-    $sheet->write_number($row, 18, $stats['urls'],                $fmtn);
-    $sheet->write_number($row, 19, $stats['pages'],               $fmtn);
-    $sheet->write_number($row, 20, $stats['other_modules'],       $fmtn);
+    $sheet->write_string($row, 11, $stats['avg_time_spent'],      $fmtn);
+    $sheet->write_number($row, 12, $stats['total_views'],         $fmtn);
+    $sheet->write_number($row, 13, $stats['total_modules'],       $fmtn);
+    $sheet->write_number($row, 14, $stats['h5p'],                 $fmtn);
+    $sheet->write_number($row, 15, $stats['assignments'],         $fmtn);
+    $sheet->write_number($row, 16, $stats['quizzes'],             $fmtn);
+    $sheet->write_number($row, 17, $stats['forums'],              $fmtn);
+    $sheet->write_number($row, 18, $stats['files'],               $fmtn);
+    $sheet->write_number($row, 19, $stats['videos'],              $fmtn);
+    $sheet->write_number($row, 20, $stats['urls'],                $fmtn);
+    $sheet->write_number($row, 21, $stats['pages'],               $fmtn);
+    $sheet->write_number($row, 22, $stats['other_modules'],       $fmtn);
 
     $row++;
     $num++;
