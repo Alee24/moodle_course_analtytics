@@ -12,7 +12,9 @@ require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/enrol/locallib.php');
 
-$categoryid = optional_param('category', 0, PARAM_INT);
+$categoryid    = optional_param('category', 0, PARAM_INT);
+$coursecode    = optional_param('coursecode', '', PARAM_TEXT);
+$lectureremail = optional_param('lectureremail', '', PARAM_TEXT);
 
 require_login();
 $context = context_system::instance();
@@ -33,11 +35,11 @@ $total_inactive     = 0;
 $engagement_labels  = [];
 $engagement_data    = [];
 
-$require_category = ($categoryid == 0);
+$require_category = ($categoryid == 0 && empty($coursecode) && empty($lectureremail));
 
 if (!$require_category) {
-    // Fetch all courses for the selected category
-    $courses = \local_courseanalytics\course_manager::get_courses($categoryid);
+    // Fetch all courses for the selected filters
+    $courses = \local_courseanalytics\course_manager::get_courses($categoryid, 0, $coursecode, $lectureremail);
 
     foreach ($courses as $course) {
         $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id, true);
@@ -80,8 +82,11 @@ if (!$require_category) {
 $data = [
     'urls' => [
         'index'  => (new moodle_url('/local/courseanalytics/index.php'))->out(false),
-        'export' => (new moodle_url('/local/courseanalytics/export.php',
-            $categoryid > 0 ? ['category' => $categoryid] : []))->out(false),
+        'export' => (new moodle_url('/local/courseanalytics/export.php', [
+            'category' => $categoryid,
+            'coursecode' => $coursecode,
+            'lectureremail' => $lectureremail
+        ]))->out(false),
     ],
     'courses'        => $formatted_courses,
     'total_courses'  => count($formatted_courses),
@@ -100,6 +105,10 @@ $data = [
         ],
     ],
     'require_category' => $require_category,
+    'filters' => [
+        'coursecode' => $coursecode,
+        'lectureremail' => $lectureremail,
+    ],
     'footer_text' => 'Developed by | <a href="https://kkdes.co.ke/" target="_blank">KKDES</a>',
 ];
 

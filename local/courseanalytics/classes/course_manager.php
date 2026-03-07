@@ -15,8 +15,8 @@ class course_manager {
     /**
      * Get list of courses based on user permissions and filters.
      */
-    public static function get_courses($categoryid = 0, $teacherid = 0) {
-        global $DB, $USER;
+    public static function get_courses($categoryid = 0, $teacherid = 0, $coursecode = '', $lectureremail = '') {
+        global $DB, $USER, $CFG;
 
         $params = [];
         $sql = "SELECT c.id, c.fullname, c.shortname, c.category, cat.name as categoryname
@@ -27,6 +27,33 @@ class course_manager {
         if ($categoryid > 0) {
             $sql .= " AND c.category = :categoryid";
             $params['categoryid'] = $categoryid;
+        }
+
+        if (!empty($coursecode)) {
+            $sql .= " AND " . $DB->sql_like('c.shortname', ':coursecode', false, false);
+            $params['coursecode'] = '%' . $DB->sql_like_escape(trim($coursecode)) . '%';
+        }
+
+        if (!empty($lectureremail)) {
+            if (!empty($CFG->coursecontact)) {
+                $roleids = explode(',', $CFG->coursecontact);
+                list($rolesql, $roleparams) = $DB->get_in_or_equal($roleids, SQL_PARAMS_NAMED, 'r');
+                $rolecheck = "ra.roleid $rolesql";
+                $params = array_merge($params, $roleparams);
+            } else {
+                $rolecheck = "r.shortname IN ('editingteacher', 'teacher', 'coursecreator', 'lecturer', 'facilitator', 'tutor', 'instructor')";
+            }
+            
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM {role_assignments} ra
+                JOIN {context} ctx ON ra.contextid = ctx.id
+                JOIN {user} u ON ra.userid = u.id
+                JOIN {role} r ON r.id = ra.roleid
+                WHERE (ctx.contextlevel = " . CONTEXT_COURSE . " AND ctx.instanceid = c.id)
+                  AND u.email = :lectemail
+                  AND ($rolecheck)
+            )";
+            $params['lectemail'] = trim($lectureremail);
         }
 
         if (!\is_siteadmin()) {

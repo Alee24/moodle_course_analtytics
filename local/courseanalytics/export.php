@@ -16,8 +16,10 @@ require_login();
 $context = context_system::instance();
 require_capability('local/courseanalytics:view', $context);
 
-$categoryid = optional_param('category', 0, PARAM_INT);
-$courseid   = optional_param('id', 0, PARAM_INT);
+$categoryid    = optional_param('category', 0, PARAM_INT);
+$courseid      = optional_param('id', 0, PARAM_INT);
+$coursecode    = optional_param('coursecode', '', PARAM_TEXT);
+$lectureremail = optional_param('lectureremail', '', PARAM_TEXT);
 
 // ---- Fetch all courses + stats ----
 if ($courseid > 0) {
@@ -27,7 +29,7 @@ if ($courseid > 0) {
         $courses = [];
     }
 } else {
-    $courses = \local_courseanalytics\course_manager::get_courses($categoryid);
+    $courses = \local_courseanalytics\course_manager::get_courses($categoryid, 0, $coursecode, $lectureremail);
 }
 
 // ---- Create Excel Workbook ----

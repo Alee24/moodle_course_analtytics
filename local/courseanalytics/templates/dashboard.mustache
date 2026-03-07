@@ -14,26 +14,46 @@
     </div>
 
     {{! ===== FILTER ===== }}
-    <div class="card ca-card mb-4">
-        <div class="card-body p-3">
-            <form action="{{urls.index}}" method="get" class="form-inline">
-                <label class="mr-2 font-weight-bold">Filter by Category:</label>
-                <select name="category" class="custom-select mr-2" required>
-                    <option value="" disabled {{#require_category}}selected{{/require_category}}>-- Select a Category --</option>
-                    {{#categories}}
-                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                    {{/categories}}
-                </select>
-                <button type="submit" class="btn btn-primary">Load Analytics</button>
+    <div class="card ca-card mb-4 border-0 shadow-sm" style="border-radius: 12px; background: #fff;">
+        <div class="card-body p-4">
+            <form action="{{urls.index}}" method="get" class="form-inline d-flex flex-wrap gap-3 align-items-center">
+                <div class="form-group mr-3 mb-2">
+                    <label class="mr-2 font-weight-bold text-dark">Filter by Category:</label>
+                    <select name="category" class="custom-select shadow-sm" style="border-radius: 6px;">
+                        <option value="" {{#require_category}}selected{{/require_category}}>-- All Categories --</option>
+                        {{#categories}}
+                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/categories}}
+                    </select>
+                </div>
+                
+                <div class="form-group mr-3 mb-2">
+                    <label class="mr-2 font-weight-bold text-dark">Course Shortcode:</label>
+                    <input type="text" name="coursecode" value="{{filters.coursecode}}" placeholder="e.g. COMP101" class="form-control shadow-sm" style="border-radius: 6px;">
+                </div>
+
+                <div class="form-group mr-3 mb-2">
+                    <label class="mr-2 font-weight-bold text-dark">Lecturer Email:</label>
+                    <input type="email" name="lectureremail" value="{{filters.lectureremail}}" placeholder="e.g. jdoe@university.edu" class="form-control shadow-sm" style="border-radius: 6px;">
+                </div>
+
+                <div class="form-group mb-2 ml-auto">
+                    <button type="submit" class="btn text-white font-weight-bold shadow-sm px-4" style="background-color: #c00085; border-radius: 8px;">
+                        <i class="fa fa-filter mr-1"></i> Apply Filters
+                    </button>
+                    <a href="{{urls.index}}" class="btn btn-outline-secondary ml-2 shadow-sm font-weight-bold" style="border-radius: 8px;">
+                        <i class="fa fa-refresh"></i> Clear
+                    </a>
+                </div>
             </form>
         </div>
     </div>
 
     {{#require_category}}
-    <div class="alert alert-info text-center py-5 shadow-sm ca-card">
-        <i class="fa fa-info-circle fa-4x mb-3 text-info opacity-75"></i>
-        <h3 class="font-weight-bold">Welcome to Course Analytics</h3>
-        <p class="lead mb-0">Please select a category from the filter above to begin loading course statistics.</p>
+    <div class="alert alert-info text-center py-5 shadow-sm ca-card border-0" style="background-color: #e0f2f1; border-radius: 12px;">
+        <i class="fa fa-info-circle fa-4x mb-3 text-info opacity-75" style="color: #00897b !important;"></i>
+        <h3 class="font-weight-bold text-dark">Welcome to Course Analytics</h3>
+        <p class="lead mb-0 text-secondary">Please select a category or enter a search filter above to load course statistics.</p>
     </div>
     {{/require_category}}
 
