@@ -17,9 +17,18 @@ $context = context_system::instance();
 require_capability('local/courseanalytics:view', $context);
 
 $categoryid = optional_param('category', 0, PARAM_INT);
+$courseid   = optional_param('id', 0, PARAM_INT);
 
 // ---- Fetch all courses + stats ----
-$courses = \local_courseanalytics\course_manager::get_courses($categoryid);
+if ($courseid > 0) {
+    if ($DB->record_exists('course', ['id' => $courseid])) {
+        $courses = [$DB->get_record('course', ['id' => $courseid])];
+    } else {
+        $courses = [];
+    }
+} else {
+    $courses = \local_courseanalytics\course_manager::get_courses($categoryid);
+}
 
 // ---- Create Excel Workbook ----
 $filename = 'course_analytics_' . date('Ymd_His');
@@ -84,7 +93,8 @@ foreach ($widths as $col => $width) {
 $row = $header_row + 1;
 $num = 1;
 foreach ($courses as $course) {
-    $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id);
+    $skip_heavy = count($courses) > 1; // Only load heavy time/views data for single course exports
+    $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id, $skip_heavy);
     $is_even = ($num % 2 === 0);
     $fmt  = $is_even ? $format_even     : $format_odd;
     $fmtn = $is_even ? $format_numbere  : $format_number;

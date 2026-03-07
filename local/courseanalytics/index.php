@@ -40,7 +40,7 @@ if (!$require_category) {
     $courses = \local_courseanalytics\course_manager::get_courses($categoryid);
 
     foreach ($courses as $course) {
-        $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id);
+        $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id, true);
 
         $total_active   += $stats['active_students'];
         $total_inactive += $stats['inactive_students'];

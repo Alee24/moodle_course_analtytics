@@ -206,7 +206,7 @@ class course_manager {
     /**
      * Get comprehensive stats for a course (used in dashboard table + export).
      */
-    public static function get_course_full_stats($courseid) {
+    public static function get_course_full_stats($courseid, $skip_heavy = false) {
         global $CFG;
         require_once($CFG->libdir . '/completionlib.php');
 
@@ -231,39 +231,59 @@ class course_manager {
 
         $active_cutoff  = time() - (7 * 24 * 60 * 60);
         $active_count   = 0;
-
-        $completion = new \completion_info($course);
-        $modinfo = \get_fast_modinfo($course);
-        $tracked_activities = [];
-        foreach ($modinfo->get_cms() as $cm) {
-            if ($cm->completion != COMPLETION_TRACKING_NONE) {
-                $tracked_activities[] = $cm;
-            }
-        }
+        $completed_count = 0; // Initialize completed_count
 
         $total_completion_percentage = 0;
 
-        foreach ($enrolled_users as $u) {
-            if ($u->lastaccess > $active_cutoff) {
-                $active_count++;
-            }
-            if (count($tracked_activities) > 0) {
-                $comp = 0;
-                foreach ($tracked_activities as $cm) {
-                    $c_data = $completion->get_data($cm, true, $u->id);
-                    if ($c_data->completionstate == COMPLETION_COMPLETE || $c_data->completionstate == COMPLETION_COMPLETE_PASS) {
-                        $comp++;
-                    }
+        if (!$skip_heavy) {
+            $completion = new \completion_info($course);
+            $modinfo = \get_fast_modinfo($course);
+            $tracked_activities = [];
+            foreach ($modinfo->get_cms() as $cm) {
+                if ($cm->completion != COMPLETION_TRACKING_NONE) {
+                    $tracked_activities[] = $cm;
                 }
-                $total_completion_percentage += ($comp / count($tracked_activities)) * 100;
             }
+
+            foreach ($enrolled_users as $u) {
+                if ($u->lastaccess > $active_cutoff) {
+                    $active_count++;
+                }
+                if (count($tracked_activities) > 0) {
+                    $comp = 0;
+                    foreach ($tracked_activities as $cm) {
+                        $c_data = $completion->get_data($cm, true, $u->id);
+                        if ($c_data->completionstate == COMPLETION_COMPLETE || $c_data->completionstate == COMPLETION_COMPLETE_PASS) {
+                            $comp++;
+                        }
+                    }
+                    $total_completion_percentage += ($comp / count($tracked_activities)) * 100;
+                }
+            }
+
+            $completion_rate = $total_students > 0
+                ? round(($total_completion_percentage / $total_students), 1)
+                : 0;
+
+            $time_views = self::get_time_and_views($courseid, $total_students);
+        } else {
+            // Fast mode: just use basic course completion states and skip time/views logs
+            $completion_rate = 0;
+            $completion = new \completion_info($course);
+            
+            foreach ($enrolled_users as $u) {
+                if ($u->lastaccess > $active_cutoff) {
+                    $active_count++;
+                }
+                if ($completion->is_course_complete($u->id)) {
+                    $completed_count++;
+                }
+            }
+            if ($total_students > 0) {
+                $completion_rate = round(($completed_count / $total_students) * 100, 1);
+            }
+            $time_views = ['views' => 'N/A', 'avg_time' => 'N/A'];
         }
-
-        $completion_rate = $total_students > 0
-            ? round(($total_completion_percentage / $total_students), 1)
-            : 0;
-
-        $time_views = self::get_time_and_views($courseid, $total_students);
 
         return [
             'courseid'          => $courseid,
