@@ -10,6 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Course Monitoring & Analytics';
+$string['admin_analytics_tab'] = 'Analytics';
 $string['courseanalytics:view'] = 'View course analytics and monitoring';
 $string['manageanalytics'] = 'Manage Course Analytics';
 $string['courseoverview'] = 'Course Overview';
