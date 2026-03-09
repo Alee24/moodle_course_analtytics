@@ -97,7 +97,8 @@ if (count($courses) == 1 && $courseid > 0) {
     $row = 3;
     foreach ($data_pairs as $label => $val) {
         $sheet->write_string($row, 0, $label, $format_header);
-        if (is_numeric($val) && strpos($label, '%') === false && strpos($label, 'Time') === false) {
+        // Ensure we only use write_number for actual numeric values.
+        if (is_numeric($val) && !preg_match('/%|h|m/', (string)$val) && !in_array($label, ['Average Time Spent', 'Total Views'])) {
             $sheet->write_number($row, 1, $val, $format_odd);
         } else {
             $sheet->write_string($row, 1, (string)$val, $format_odd);
@@ -177,7 +178,13 @@ if (count($courses) == 1 && $courseid > 0) {
         $sheet->write_number($row, 9,  $stats['completed_students'],  $fmtn);
         $sheet->write_number($row, 10, $stats['completion_rate'],     $fmtc);
         $sheet->write_string($row, 11, $stats['avg_time_spent'],      $fmtn);
-        $sheet->write_number($row, 12, $stats['total_views'],         $fmtn);
+        
+        if (is_numeric($stats['total_views'])) {
+            $sheet->write_number($row, 12, $stats['total_views'],         $fmtn);
+        } else {
+            $sheet->write_string($row, 12, (string)$stats['total_views'],  $fmtn);
+        }
+        
         $sheet->write_number($row, 13, $stats['total_modules'],       $fmtn);
         $sheet->write_number($row, 14, $stats['h5p'],                 $fmtn);
         $sheet->write_number($row, 15, $stats['assignments'],         $fmtn);

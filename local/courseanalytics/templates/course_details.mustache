@@ -17,58 +17,58 @@
     </div>
 
     {{! ===== SUMMARY STATS CARDS ===== }}
-    <div class="row mb-5 justify-content-center">
-        <div class="col-md-2 mb-3">
-            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #2c6e91;">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-users"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.total_students}}</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">TOTAL ENROLLED USERS</div>
+    <div class="row mb-4" style="margin-left: -8px; margin-right: -8px;">
+        <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+            <div class="card ca-stat-card text-white text-center" style="background-color: #2c6e91; border-radius: 10px; min-height: 140px; overflow: hidden;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                    <i class="fa fa-users mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
+                    <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.total_students}}</div>
+                    <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Total Enrolled</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #2e9f5e;">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-line-chart"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.active_students}}</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">ACTIVE USERS (7 DAYS)</div>
+        <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+            <div class="card ca-stat-card text-white text-center" style="background-color: #2e9f5e; border-radius: 10px; min-height: 140px; overflow: hidden;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                    <i class="fa fa-line-chart mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
+                    <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.active_students}}</div>
+                    <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Active (7 Days)</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #17a2b8;">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-trophy"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.completion_rate}}%</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">AVG. COURSE COMPLETION</div>
+        <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+            <div class="card ca-stat-card text-white text-center" style="background-color: #17a2b8; border-radius: 10px; min-height: 140px; overflow: hidden;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                    <i class="fa fa-trophy mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
+                    <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.completion_rate}}%</div>
+                    <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Avg. Completion</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #e58e26;">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-cubes"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.total_modules}}</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">TOTAL RESOURCES / ACTIVITIES</div>
+        <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+            <div class="card ca-stat-card text-white text-center" style="background-color: #e58e26; border-radius: 10px; min-height: 140px; overflow: hidden;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                    <i class="fa fa-cubes mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
+                    <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.total_modules}}</div>
+                    <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Resources / Activities</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #8e44ad;">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-clock-o"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.avg_time_spent}}</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">AVG. TIME SPENT</div>
+        <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+            <div class="card ca-stat-card text-white text-center" style="background-color: #8e44ad; border-radius: 10px; min-height: 140px; overflow: hidden;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                    <i class="fa fa-clock-o mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
+                    <div class="font-weight-bold" style="font-size: 1.4rem; line-height: 1; white-space: nowrap;">{{metrics.avg_time_spent}}</div>
+                    <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Avg. Time Spent</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 mb-3">
-            <div class="card ca-stat-card text-white text-center h-100" style="background-color: #e84393;">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-play-circle-o"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.8rem;">{{metrics.h5p}}</div>
-                    <div class="ca-stat-label mt-2" style="font-size: 0.75rem;">TOTAL H5P CONTENT</div>
+        <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+            <div class="card ca-stat-card text-white text-center" style="background-color: #e84393; border-radius: 10px; min-height: 140px; overflow: hidden;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                    <i class="fa fa-play-circle-o mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
+                    <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.h5p}}</div>
+                    <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">H5P Content</div>
                 </div>
             </div>
         </div>
