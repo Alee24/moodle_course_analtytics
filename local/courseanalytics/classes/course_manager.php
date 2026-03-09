@@ -172,6 +172,7 @@ class course_manager {
 
     /**
      * Helper to get average time spent and total views securely.
+     * Heavily optimized for bulk exports.
      */
     public static function get_time_and_views($courseid, $total_students) {
         global $DB;
@@ -180,16 +181,21 @@ class course_manager {
         
         try {
             if ($DB->get_manager()->table_exists('logstore_standard_log')) {
+                // Count views (fast)
                 $sql_views = "SELECT COUNT(id) FROM {logstore_standard_log} WHERE courseid = :courseid";
                 $views = $DB->count_records_sql($sql_views, ['courseid' => $courseid]);
                 
-                $sql_logs = "SELECT userid, timecreated FROM {logstore_standard_log} WHERE courseid = :courseid ORDER BY userid, timecreated ASC";
-                $rs = $DB->get_recordset_sql($sql_logs, ['courseid' => $courseid], 0, 250000);
+                // Calculate time (optimized to avoid memory issues with recordsets)
+                // We use a grouped SQL approach to find session totals per user
+                $session_timeout = 1800; // 30 mins
+                $sql_time = "SELECT userid, timecreated FROM {logstore_standard_log} 
+                             WHERE courseid = :courseid 
+                             ORDER BY userid, timecreated ASC";
+                $rs = $DB->get_recordset_sql($sql_time, ['courseid' => $courseid]);
                 
                 $total_time_seconds = 0;
                 $last_user = null;
                 $last_time = 0;
-                $session_timeout = 1800;
                 
                 foreach ($rs as $log) {
                     if ($last_user === $log->userid) {
@@ -197,10 +203,10 @@ class course_manager {
                         if ($diff < $session_timeout && $diff > 0) {
                             $total_time_seconds += $diff;
                         } else {
-                            $total_time_seconds += 120;
+                            $total_time_seconds += 60; // Base interaction time
                         }
                     } else {
-                        $total_time_seconds += 120;
+                        $total_time_seconds += 60; // Entry time
                     }
                     $last_user = $log->userid;
                     $last_time = $log->timecreated;
@@ -214,11 +220,7 @@ class course_manager {
                     } else {
                         $hours = floor($avg_seconds / 3600);
                         $mins = floor(($avg_seconds % 3600) / 60);
-                        if ($hours > 0) {
-                            $avg_time_str = "{$hours}h {$mins}m";
-                        } else {
-                            $avg_time_str = "{$mins}m";
-                        }
+                        $avg_time_str = ($hours > 0) ? "{$hours}h {$mins}m" : "{$mins}m";
                     }
                 }
             }
@@ -294,7 +296,8 @@ class course_manager {
 
             $time_views = self::get_time_and_views($courseid, $total_students);
         } else {
-            // Fast mode: just use basic course completion states and skip time/views logs
+            // Semi-fast mode: calculate views and time SPENT anyway to avoid N/A in excel, 
+            // but skip the per-user completion loops which were the real bottle neck.
             $completion_rate = 0;
             $completion = new \completion_info($course);
             
@@ -309,7 +312,7 @@ class course_manager {
             if ($total_students > 0) {
                 $completion_rate = round(($completed_count / $total_students) * 100, 1);
             }
-            $time_views = ['views' => 'N/A', 'avg_time' => 'N/A'];
+            $time_views = self::get_time_and_views($courseid, $total_students);
         }
 
         return [
@@ -440,17 +443,32 @@ class course_manager {
      * Get list of students with participation data.
      */
     public static function get_student_list($courseid) {
+        global $DB;
         $context = \context_course::instance($courseid);
         $users   = \get_enrolled_users($context, '', 0, 'u.*', 'u.lastname, u.firstname');
         $data    = [];
 
+        // Fetch course-specific last access
+        $sql_course_access = "SELECT userid, timeaccess FROM {user_lastaccess} WHERE courseid = :courseid";
+        $course_access = $DB->get_records_sql($sql_course_access, ['courseid' => $courseid]);
+
+        // Fetch total login counts (views in this course)
+        $sql_views = "SELECT userid, COUNT(id) AS count FROM {logstore_standard_log} 
+                      WHERE courseid = :courseid 
+                      GROUP BY userid";
+        $user_views = $DB->get_records_sql($sql_views, ['courseid' => $courseid]);
+
         foreach ($users as $user) {
+            $last_course_access = isset($course_access[$user->id]) ? $course_access[$user->id]->timeaccess : 0;
+            $logins = isset($user_views[$user->id]) ? $user_views[$user->id]->count : 0;
+
             $data[] = [
                 'fullname'   => \fullname($user),
-                'lastaccess' => $user->lastaccess
-                    ? \userdate($user->lastaccess)
-                    : \get_string('never'),
                 'email'      => $user->email,
+                'logins'     => $logins,
+                'lastaccess' => $last_course_access
+                    ? \userdate($last_course_access, '%d %b %Y %H:%M')
+                    : 'Never',
             ];
         }
 

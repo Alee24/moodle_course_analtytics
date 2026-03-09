@@ -194,7 +194,8 @@
                                 <tr>
                                     <th class="pl-4">Student Name</th>
                                     <th>Email Address</th>
-                                    <th class="text-center">{{#str}} lastaccess, local_courseanalytics {{/str}}</th>
+                                    <th class="text-center">Visits</th>
+                                    <th class="text-center">Course Last Access</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -202,12 +203,13 @@
                                 <tr>
                                     <td class="pl-4 font-weight-bold"><i class="fa fa-user-circle-o text-muted mr-2"></i>{{fullname}}</td>
                                     <td><a href="mailto:{{email}}" class="text-muted">{{email}}</a></td>
-                                    <td class="text-center"><span class="badge badge-light border">{{lastaccess}}</span></td>
+                                    <td class="text-center"><span class="badge badge-info shadow-sm">{{logins}}</span></td>
+                                    <td class="text-center"><span class="badge badge-light border shadow-sm">{{lastaccess}}</span></td>
                                 </tr>
                                 {{/students}}
                                 {{^students}}
                                 <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">
+                                    <td colspan="4" class="text-center py-4 text-muted">
                                         <i class="fa fa-user-times fa-2x mb-2"></i><br>No students are currently enrolled here.
                                     </td>
                                 </tr>
