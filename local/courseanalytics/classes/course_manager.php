@@ -239,7 +239,7 @@ class course_manager {
      * Get comprehensive stats for a course (used in dashboard table + export).
      */
     public static function get_course_full_stats($courseid, $skip_heavy = false) {
-        global $CFG;
+        global $CFG, $DB;
         require_once($CFG->libdir . '/completionlib.php');
 
         $course   = \get_course($courseid);
