@@ -134,6 +134,7 @@ class course_manager {
             'folder'   => 0,
             'video'    => 0, // label + resource with video mime
             'h5p'      => 0, // h5pactivity or hvp plugin
+            'bbb'      => 0, // BigBlueButton
             'other'    => 0,
             'total'    => 0,
         ];
@@ -147,6 +148,8 @@ class course_manager {
             
             if ($modname === 'h5pactivity' || $modname === 'hvp') {
                 $counts['h5p']++;
+            } elseif ($modname === 'bigbluebuttonbn') {
+                $counts['bbb']++;
             } elseif (isset($counts[$modname])) {
                 $counts[$modname]++;
             } else {
@@ -341,6 +344,7 @@ class course_manager {
             'urls'              => $modcounts['url'],
             'pages'             => $modcounts['page'],
             'h5p'               => $modcounts['h5p'],
+            'bbb'               => $modcounts['bbb'],
             'videos'            => $modcounts['video'],
             'other_modules'     => $modcounts['other'],
         ];
@@ -360,6 +364,7 @@ class course_manager {
             'avg_time_spent'    => $s['avg_time_spent'],
             'total_views'       => $s['total_views'],
             'h5p'               => $s['h5p'],
+            'bbb'               => $s['bbb'],
             'hidden_modules'    => 0,
         ];
     }
@@ -412,6 +417,7 @@ class course_manager {
                     elseif ($modname === 'chat') $icon = 'fa-comments text-primary';
                     elseif ($modname === 'feedback' || $modname === 'choice') $icon = 'fa-check-square-o text-success';
                     elseif ($modname === 'h5pactivity' || $modname === 'hvp') $icon = 'fa-play-circle text-info font-weight-bold';
+                    elseif ($modname === 'bigbluebuttonbn') $icon = 'fa-video-camera text-primary font-weight-bold';
 
                     $cm_views = isset($view_counts[$cmid]) ? $view_counts[$cmid]->views : 0;
                     
@@ -479,8 +485,17 @@ class course_manager {
                     FROM {h5pactivity_attempts} 
                     WHERE h5pactivityid IN (SELECT id FROM {h5pactivity} WHERE course = :courseid)
                     GROUP BY userid";
-        // Attempt to merge with HVP interactions if table exists
         $user_h5p = $DB->get_records_sql($sql_h5p, ['courseid' => $courseid]);
+
+        // Fetch BBB attendances (logs that show join)
+        // We look for 'bigbluebuttonbn' join events in logs
+        $sql_bbb = "SELECT userid, COUNT(id) AS count FROM {logstore_standard_log} 
+                    WHERE courseid = :courseid 
+                      AND component = 'mod_bigbluebuttonbn' 
+                      AND action = 'viewed' 
+                      AND target = 'activity'
+                    GROUP BY userid";
+        $user_bbb = $DB->get_records_sql($sql_bbb, ['courseid' => $courseid]);
 
         foreach ($users as $user) {
             $last_course_access = isset($course_access[$user->id]) ? $course_access[$user->id]->timeaccess : 0;
@@ -488,6 +503,7 @@ class course_manager {
             $assigns = isset($user_assigns[$user->id]) ? $user_assigns[$user->id]->count : 0;
             $quizzes = isset($user_quizzes[$user->id]) ? $user_quizzes[$user->id]->count : 0;
             $h5p = isset($user_h5p[$user->id]) ? $user_h5p[$user->id]->count : 0;
+            $bbb = isset($user_bbb[$user->id]) ? $user_bbb[$user->id]->count : 0;
 
             $data[] = [
                 'fullname'   => \fullname($user),
@@ -496,6 +512,7 @@ class course_manager {
                 'assigns'    => $assigns,
                 'quizzes'    => $quizzes,
                 'h5p'        => $h5p,
+                'bbb'        => $bbb,
                 'lastaccess' => $last_course_access
                     ? \userdate($last_course_access, '%d %b %Y %H:%M')
                     : 'Never',
