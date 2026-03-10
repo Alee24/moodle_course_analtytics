@@ -452,20 +452,50 @@ class course_manager {
         $sql_course_access = "SELECT userid, timeaccess FROM {user_lastaccess} WHERE courseid = :courseid";
         $course_access = $DB->get_records_sql($sql_course_access, ['courseid' => $courseid]);
 
-        // Fetch total login counts (views in this course)
+        // Fetch total course views (logs)
         $sql_views = "SELECT userid, COUNT(id) AS count FROM {logstore_standard_log} 
                       WHERE courseid = :courseid 
                       GROUP BY userid";
         $user_views = $DB->get_records_sql($sql_views, ['courseid' => $courseid]);
 
+        // Fetch assignments submissions submitted/graded
+        $sql_assign = "SELECT s.userid, COUNT(s.id) as count 
+                       FROM {assign_submission} s
+                       JOIN {assign} a ON s.assignment = a.id
+                       WHERE a.course = :courseid AND s.status = 'submitted'
+                       GROUP BY s.userid";
+        $user_assigns = $DB->get_records_sql($sql_assign, ['courseid' => $courseid]);
+
+        // Fetch quizzes attempts
+        $sql_quizzes = "SELECT qatt.userid, COUNT(qatt.id) as count
+                        FROM {quiz_attempts} qatt
+                        JOIN {quiz} q ON qatt.quiz = q.id
+                        WHERE q.course = :courseid AND qatt.state = 'finished'
+                        GROUP BY qatt.userid";
+        $user_quizzes = $DB->get_records_sql($sql_quizzes, ['courseid' => $courseid]);
+
+        // Fetch H5P attempts (h5pactivity or hvp)
+        $sql_h5p = "SELECT userid, COUNT(id) as count 
+                    FROM {h5pactivity_attempts} 
+                    WHERE h5pactivityid IN (SELECT id FROM {h5pactivity} WHERE course = :courseid)
+                    GROUP BY userid";
+        // Attempt to merge with HVP interactions if table exists
+        $user_h5p = $DB->get_records_sql($sql_h5p, ['courseid' => $courseid]);
+
         foreach ($users as $user) {
             $last_course_access = isset($course_access[$user->id]) ? $course_access[$user->id]->timeaccess : 0;
-            $logins = isset($user_views[$user->id]) ? $user_views[$user->id]->count : 0;
+            $views = isset($user_views[$user->id]) ? $user_views[$user->id]->count : 0;
+            $assigns = isset($user_assigns[$user->id]) ? $user_assigns[$user->id]->count : 0;
+            $quizzes = isset($user_quizzes[$user->id]) ? $user_quizzes[$user->id]->count : 0;
+            $h5p = isset($user_h5p[$user->id]) ? $user_h5p[$user->id]->count : 0;
 
             $data[] = [
                 'fullname'   => \fullname($user),
                 'email'      => $user->email,
-                'logins'     => $logins,
+                'logins'     => $views,
+                'assigns'    => $assigns,
+                'quizzes'    => $quizzes,
+                'h5p'        => $h5p,
                 'lastaccess' => $last_course_access
                     ? \userdate($last_course_access, '%d %b %Y %H:%M')
                     : 'Never',

@@ -194,22 +194,28 @@
                                 <tr>
                                     <th class="pl-4">Student Name</th>
                                     <th>Email Address</th>
-                                    <th class="text-center">Visits</th>
-                                    <th class="text-center">Course Last Access</th>
+                                    <th class="text-center">Views</th>
+                                    <th class="text-center">Assign</th>
+                                    <th class="text-center">Quiz</th>
+                                    <th class="text-center">H5P</th>
+                                    <th class="text-center">Last Access</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#students}}
                                 <tr>
                                     <td class="pl-4 font-weight-bold"><i class="fa fa-user-circle-o text-muted mr-2"></i>{{fullname}}</td>
-                                    <td><a href="mailto:{{email}}" class="text-muted">{{email}}</a></td>
+                                    <td><a href="mailto:{{email}}" class="text-muted small">{{email}}</a></td>
                                     <td class="text-center"><span class="badge badge-info shadow-sm">{{logins}}</span></td>
-                                    <td class="text-center"><span class="badge badge-light border shadow-sm">{{lastaccess}}</span></td>
+                                    <td class="text-center"><span class="badge badge-warning shadow-sm">{{assigns}}</span></td>
+                                    <td class="text-center"><span class="badge badge-success shadow-sm">{{quizzes}}</span></td>
+                                    <td class="text-center"><span class="badge badge-primary shadow-sm">{{h5p}}</span></td>
+                                    <td class="text-center"><span class="badge badge-light border shadow-sm small">{{lastaccess}}</span></td>
                                 </tr>
                                 {{/students}}
                                 {{^students}}
                                 <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">
+                                    <td colspan="7" class="text-center py-4 text-muted">
                                         <i class="fa fa-user-times fa-2x mb-2"></i><br>No students are currently enrolled here.
                                     </td>
                                 </tr>
