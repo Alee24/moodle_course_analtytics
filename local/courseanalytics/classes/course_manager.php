@@ -263,60 +263,45 @@ class course_manager {
 
         $active_cutoff  = time() - (7 * 24 * 60 * 60);
         $active_count   = 0;
-        $completed_count = 0; // Initialize completed_count
+        
+        // Count active users in THIS course specifically (not site-wide)
+        $sql_active = "SELECT COUNT(DISTINCT userid) FROM {user_lastaccess} 
+                       WHERE courseid = :courseid AND timeaccess > :cutoff";
+        $active_count = $DB->count_records_sql($sql_active, ['courseid' => $courseid, 'cutoff' => $active_cutoff]);
 
-        $total_completion_percentage = 0;
-
-        if (!$skip_heavy) {
-            $completion = new \completion_info($course);
-            $modinfo = \get_fast_modinfo($course);
-            $tracked_activities = [];
-            foreach ($modinfo->get_cms() as $cm) {
-                if ($cm->completion != COMPLETION_TRACKING_NONE) {
-                    $tracked_activities[] = $cm;
-                }
+        // Smart Completion Calculation (Fast even for large courses)
+        // We count total activity completions for all students vs total expected completions
+        $completion_rate = 0;
+        
+        // 1. Get count of activities with completion enabled in this course
+        $modinfo = \get_fast_modinfo($course);
+        $tracked_activities_count = 0;
+        foreach ($modinfo->get_cms() as $cm) {
+            if ($cm->completion != COMPLETION_TRACKING_NONE) {
+                $tracked_activities_count++;
             }
-
-            foreach ($enrolled_users as $u) {
-                if ($u->lastaccess > $active_cutoff) {
-                    $active_count++;
-                }
-                if (count($tracked_activities) > 0) {
-                    $comp = 0;
-                    foreach ($tracked_activities as $cm) {
-                        $c_data = $completion->get_data($cm, true, $u->id);
-                        if ($c_data->completionstate == COMPLETION_COMPLETE || $c_data->completionstate == COMPLETION_COMPLETE_PASS) {
-                            $comp++;
-                        }
-                    }
-                    $total_completion_percentage += ($comp / count($tracked_activities)) * 100;
-                }
-            }
-
-            $completion_rate = $total_students > 0
-                ? round(($total_completion_percentage / $total_students), 1)
-                : 0;
-
-            $time_views = self::get_time_and_views($courseid, $total_students);
-        } else {
-            // Semi-fast mode: calculate views and time SPENT anyway to avoid N/A in excel, 
-            // but skip the per-user completion loops which were the real bottle neck.
-            $completion_rate = 0;
-            $completion = new \completion_info($course);
-            
-            foreach ($enrolled_users as $u) {
-                if ($u->lastaccess > $active_cutoff) {
-                    $active_count++;
-                }
-                if ($completion->is_course_complete($u->id)) {
-                    $completed_count++;
-                }
-            }
-            if ($total_students > 0) {
-                $completion_rate = round(($completed_count / $total_students) * 100, 1);
-            }
-            $time_views = self::get_time_and_views($courseid, $total_students);
         }
+
+        if ($total_students > 0 && $tracked_activities_count > 0) {
+            // 2. Count all 'completed' rows in course_modules_completion for this course's modules and these students
+            // We use a join with course_modules to ensure we only get completions for this course
+            $sql_comp = "SELECT COUNT(cmc.id) 
+                         FROM {course_modules_completion} cmc
+                         JOIN {course_modules} cm ON cmc.coursemoduleid = cm.id
+                         JOIN {enrol} e ON e.courseid = cm.course
+                         JOIN {user_enrolments} ue ON ue.enrolid = e.id AND ue.userid = cmc.userid
+                         WHERE cm.course = :courseid 
+                         AND cmc.completionstate IN (1, 2)"; // 1=COMPLETE, 2=COMPLETE_PASS
+            
+            $total_completed_actions = $DB->count_records_sql($sql_comp, ['courseid' => $courseid]);
+            
+            // Average progress = (Total completed actions) / (Students * Activities)
+            $potential_completions = $total_students * $tracked_activities_count;
+            $completion_rate = round(($total_completed_actions / $potential_completions) * 100, 1);
+        }
+
+        // Fetch logs (Views/Time) regardless of mode to avoid N/A
+        $time_views = self::get_time_and_views($courseid, $total_students);
 
         return [
             'courseid'          => $courseid,
