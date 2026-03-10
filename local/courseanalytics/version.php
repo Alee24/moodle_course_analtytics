@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseanalytics';
-$plugin->version   = 2024052020; // Bumped version to v1.3.0
+$plugin->version   = 2024052021; // Bumped version to force Moodle update & cache purge
 $plugin->requires  = 2022111800; // Moodle 4.1 or later
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v1.3.0';
+$plugin->release   = 'v1.3.1';

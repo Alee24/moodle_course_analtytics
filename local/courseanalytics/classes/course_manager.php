@@ -473,12 +473,14 @@ class course_manager {
         $user_h5p = $DB->get_records_sql($sql_h5p, ['courseid' => $courseid]);
 
         // Fetch BBB attendances (logs that show join)
-        // We look for 'bigbluebuttonbn' join events in logs
+        // We look for 'bigbluebuttonbn' join events in logs (using eventnames for accuracy)
         $sql_bbb = "SELECT userid, COUNT(id) AS count FROM {logstore_standard_log} 
                     WHERE courseid = :courseid 
-                      AND component = 'mod_bigbluebuttonbn' 
-                      AND action = 'viewed' 
-                      AND target = 'activity'
+                      AND (
+                          eventname = '\\mod_bigbluebuttonbn\\event\\meeting_joined' OR 
+                          eventname = '\\mod_bigbluebuttonbn\\event\\activity_viewed' OR
+                          (component = 'mod_bigbluebuttonbn' AND (action = 'viewed' OR action = 'joined'))
+                      )
                     GROUP BY userid";
         $user_bbb = $DB->get_records_sql($sql_bbb, ['courseid' => $courseid]);
 
