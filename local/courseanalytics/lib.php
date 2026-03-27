@@ -19,22 +19,24 @@ defined('MOODLE_INTERNAL') || die();
  */
 function local_courseanalytics_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('local/courseanalytics:view', $context)) {
-        // Find the 'Reports' node or similar
-        $reportnode = $navigation->find('coursereports', navigation_node::TYPE_CONTAINER);
+        // Find the 'Reports' node. In Moodle 4.x this is often 'reports' or 'coursereports'.
+        $reportnode = $navigation->find('reports', navigation_node::TYPE_CONTAINER);
+        if (!$reportnode) {
+            $reportnode = $navigation->find('coursereports', navigation_node::TYPE_CONTAINER);
+        }
         
         if (!$reportnode) {
-            // If not found (some themes), we can add to course settings or similar
             $reportnode = $navigation;
         }
 
         $url = new moodle_url('/local/courseanalytics/course.php', ['id' => $course->id]);
         $reportnode->add(
-            'Course Analytics Premium',
+            'Course Analytics',
             $url,
             navigation_node::TYPE_SETTING,
             null,
-            'local_courseanalytics_report',
-            new pix_icon('i/report', '', 'local_courseanalytics')
+            'local_courseanalytics_report_link',
+            new pix_icon('i/report', '', 'moodle')
         );
     }
 }

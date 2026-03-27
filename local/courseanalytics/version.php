@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseanalytics';
-$plugin->version   = 2024052029; // v2.0.1: Added course reports navigation extension
+$plugin->version   = 2024052030; // v2.0.2: Navigation name fix and node discovery improvement
 $plugin->requires  = 2022111800; // Moodle 4.1 or later
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v2.0.1';
+$plugin->release   = 'v2.0.2';
