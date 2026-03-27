@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseanalytics';
-$plugin->version   = 2024052024; // v1.3.4: Added student grade and enhanced export
+$plugin->version   = 2024052025; // v1.3.5: Support direct git update from dashboard
 $plugin->requires  = 2022111800; // Moodle 4.1 or later
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v1.3.4';
+$plugin->release   = 'v1.3.5';

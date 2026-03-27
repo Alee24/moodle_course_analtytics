@@ -20,6 +20,17 @@ require_login();
 $context = context_system::instance();
 require_capability('local/courseanalytics:view', $context);
 
+// ---- Update handling ----
+$action = optional_param('action', '', PARAM_ALPHANUMEXT);
+if ($action === 'pull_update' && confirm_sesskey()) {
+    $result = \local_courseanalytics\git_manager::pull_update();
+    if ($result['success']) {
+        redirect(new moodle_url('/local/courseanalytics/index.php'), $result['message'], null, \core\output\notification::NOTIFY_SUCCESS);
+    } else {
+        \core\notification::error($result['message'] . ' Detail: ' . $result['output']);
+    }
+}
+
 $PAGE->set_url(new moodle_url('/local/courseanalytics/index.php'));
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('manageanalytics', 'local_courseanalytics'));
@@ -87,7 +98,9 @@ $data = [
             'coursecode' => $coursecode,
             'lectureremail' => $lectureremail
         ]))->out(false),
+        'update' => (new moodle_url('/local/courseanalytics/index.php', ['action' => 'pull_update', 'sesskey' => sesskey()]))->out(false),
     ],
+    'update_available' => \local_courseanalytics\git_manager::has_update(),
     'courses'        => $formatted_courses,
     'total_courses'  => count($formatted_courses),
     'has_courses'    => !empty($formatted_courses),
