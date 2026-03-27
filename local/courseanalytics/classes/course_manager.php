@@ -434,7 +434,9 @@ class course_manager {
      * Get list of students with participation data.
      */
     public static function get_student_list($courseid) {
-        global $DB;
+        global $DB, $CFG;
+        require_once($CFG->libdir . '/gradelib.php');
+
         $context = \context_course::instance($courseid);
         $users   = \get_enrolled_users($context, '', 0, 'u.*', 'u.lastname, u.firstname');
         $data    = [];
@@ -492,15 +494,39 @@ class course_manager {
             $h5p = isset($user_h5p[$user->id]) ? $user_h5p[$user->id]->count : 0;
             $bbb = isset($user_bbb[$user->id]) ? $user_bbb[$user->id]->count : 0;
 
+            // Fetch course grade using Moodle Gradebook API
+            $grade_display = 'N/A';
+            $grade_class = 'secondary';
+            $grade_obj = \grade_get_course_grade($user->id, $courseid);
+            
+            if ($grade_obj && isset($grade_obj->grade) && $grade_obj->grade !== null) {
+                $grade_raw = (float)$grade_obj->grade;
+                $grade_max = (!empty($grade_obj->item) && $grade_obj->item->grademax) ? (float)$grade_obj->item->grademax : 100;
+                $grade_pct = ($grade_max > 0) ? round(($grade_raw / $grade_max) * 100, 1) : 0;
+                
+                $grade_display = $grade_pct . '%';
+                
+                // Color coding based on performance
+                if ($grade_pct >= 70) {
+                    $grade_class = 'success';
+                } elseif ($grade_pct >= 50) {
+                    $grade_class = 'warning';
+                } else {
+                    $grade_class = 'danger';
+                }
+            }
+
             $data[] = [
-                'fullname'   => \fullname($user),
-                'email'      => $user->email,
-                'logins'     => $views,
-                'assigns'    => $assigns,
-                'quizzes'    => $quizzes,
-                'h5p'        => $h5p,
-                'bbb'        => $bbb,
-                'lastaccess' => $last_course_access
+                'fullname'      => \fullname($user),
+                'email'         => $user->email,
+                'logins'        => $views,
+                'assigns'       => $assigns,
+                'quizzes'       => $quizzes,
+                'h5p'           => $h5p,
+                'bbb'           => $bbb,
+                'grade'         => $grade_display,
+                'grade_class'   => $grade_class,
+                'lastaccess'    => $last_course_access
                     ? \userdate($last_course_access, '%d %b %Y %H:%M')
                     : 'Never',
             ];

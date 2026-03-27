@@ -97,13 +97,45 @@ if (count($courses) == 1 && $courseid > 0) {
     $row = 3;
     foreach ($data_pairs as $label => $val) {
         $sheet->write_string($row, 0, $label, $format_header);
-        // Ensure we only use write_number for actual numeric values.
         if (is_numeric($val) && !preg_match('/%|h|m/', (string)$val) && !in_array($label, ['Average Time Spent', 'Total Views'])) {
             $sheet->write_number($row, 1, $val, $format_odd);
         } else {
             $sheet->write_string($row, 1, (string)$val, $format_odd);
         }
         $row++;
+    }
+
+    // ---- Add Student List Sheet ----
+    $student_list = \local_courseanalytics\course_manager::get_student_list($courseid);
+    if (!empty($student_list)) {
+        $sheet2 = $workbook->add_worksheet('Student Breakdown');
+        $sheet2->write_string(0, 0, 'Detailed Student Participation & Grades - ' . $stats['fullname'], $format_title);
+        
+        $s_headers = ['Name', 'Email', 'Views', 'Assignments', 'Quizzes', 'H5P', 'Virtual Sessions', 'Overall Grade', 'Last Access'];
+        $s_widths  = [30, 35, 12, 15, 12, 12, 18, 15, 22];
+        
+        foreach ($s_headers as $col => $header) {
+            $sheet2->write_string(2, $col, $header, $format_header);
+            $sheet2->set_column($col, $col, $s_widths[$col]);
+        }
+
+        $s_row = 3;
+        foreach ($student_list as $s) {
+            $is_even = ($s_row % 2 === 0);
+            $fmt  = $is_even ? $format_even : $format_odd;
+            $fmtn = $is_even ? $format_numbere : $format_number;
+            
+            $sheet2->write_string($s_row, 0, $s['fullname'], $fmt);
+            $sheet2->write_string($s_row, 1, $s['email'], $fmt);
+            $sheet2->write_number($s_row, 2, $s['logins'], $fmtn);
+            $sheet2->write_number($s_row, 3, $s['assigns'], $fmtn);
+            $sheet2->write_number($s_row, 4, $s['quizzes'], $fmtn);
+            $sheet2->write_number($s_row, 5, $s['h5p'], $fmtn);
+            $sheet2->write_number($s_row, 6, $s['bbb'], $fmtn);
+            $sheet2->write_string($s_row, 7, $s['grade'], $fmtn);
+            $sheet2->write_string($s_row, 8, $s['lastaccess'], $fmt);
+            $s_row++;
+        }
     }
 
 } else {

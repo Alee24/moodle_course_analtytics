@@ -210,6 +210,7 @@
                                     <th class="text-center">Quiz</th>
                                     <th class="text-center">H5P</th>
                                     <th class="text-center">Session</th>
+                                    <th class="text-center">Grade</th>
                                     <th class="text-center">Last Access</th>
                                 </tr>
                             </thead>
@@ -223,12 +224,15 @@
                                     <td class="text-center"><span class="badge badge-success shadow-sm">{{quizzes}}</span></td>
                                     <td class="text-center"><span class="badge badge-primary shadow-sm">{{h5p}}</span></td>
                                     <td class="text-center"><span class="badge badge-dark shadow-sm">{{bbb}}</span></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-{{grade_class}} shadow-sm px-2" style="font-size:0.8rem; font-weight:600;">{{grade}}</span>
+                                    </td>
                                     <td class="text-center"><span class="badge badge-light border shadow-sm small">{{lastaccess}}</span></td>
                                 </tr>
                                 {{/students}}
                                 {{^students}}
                                 <tr>
-                                    <td colspan="8" class="text-center py-4 text-muted">
+                                    <td colspan="9" class="text-center py-4 text-muted">
                                         <i class="fa fa-user-times fa-2x mb-2"></i><br>No students are currently enrolled here.
                                     </td>
                                 </tr>
