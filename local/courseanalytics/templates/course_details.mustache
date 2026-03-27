@@ -1,84 +1,80 @@
-<div class="local_courseanalytics_details container-fluid py-3">
+<div class="local_courseanalytics_details container-fluid py-5 px-md-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h1 class="ca-page-title d-flex align-items-center">
-            <i class="fa fa-graduation-cap mr-3 text-purple" style="font-size: 2rem; color: #c00085;"></i>
-            <span class="font-weight-bold mr-2 text-dark">{{course.shortname}}</span> 
-            <span class="text-muted font-weight-light"> | {{course.fullname}}</span>
+    {{! ===== HEADER ===== }}
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-4 px-2">
+        <h1 class="ca-page-title d-flex align-items-center m-0">
+            <div class="mr-4 bg-gradient-purple text-white d-flex align-items-center justify-content-center shadow-lg" style="width: 65px; height: 65px; border-radius: 18px;">
+                <i class="fa fa-graduation-cap" style="font-size: 1.8rem;"></i>
+            </div>
+            <div class="d-flex flex-column">
+                <span class="ca-page-title">{{course.shortname}}</span>
+                <span class="text-muted small font-weight-bold text-uppercase mt-1" style="letter-spacing: 2px; opacity: 0.7;">{{course.fullname}}</span>
+            </div>
         </h1>
-        <div>
-            <a href="{{urls.back}}" class="btn btn-outline-secondary shadow-sm mr-2">
-                <i class="fa fa-arrow-left mr-1"></i> Back
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{urls.back}}" class="btn btn-outline-secondary shadow-sm px-4 py-3 font-weight-bold mr-3" style="border-radius: 14px; border-width: 2px; transition: all 0.3s ease;">
+                <i class="fa fa-arrow-left mr-2"></i> Back to Dashboard
             </a>
-            <a href="{{urls.export}}" class="btn btn-success shadow-sm" style="background-color: #4caf50; border-color: #4caf50;">
-                <i class="fa fa-file-excel-o mr-1"></i> Export to Excel
+            <a href="{{urls.export}}" class="btn btn-success shadow-lg px-5 py-3 font-weight-bold" style="background: linear-gradient(135deg, #27ae60, #2ecc71); border: none; border-radius: 14px; transition: all 0.3s ease;">
+                <i class="fa fa-file-excel-o mr-2"></i> Export Course Data
             </a>
         </div>
     </div>
 
     {{! ===== SUMMARY STATS CARDS ===== }}
-    <div class="ca-stats-container mb-4">
-        <div class="row mx-0 pb-2">
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #2c6e91; border-radius: 10px; min-height: 140px; overflow: hidden;">
+    <div class="ca-stats-container mb-5">
+        <div class="row mx-0 g-4">
+            <div class="col-md-3 col-lg-2 px-2 mb-3">
+                <div class="card ca-stat-card border-0 text-white bg-gradient-primary">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-users mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.total_students}}</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Total Enrolled</div>
+                        <div class="ca-stat-icon"><i class="fa fa-users"></i></div>
+                        <div class="ca-stat-value">{{metrics.total_students}}</div>
+                        <div class="ca-stat-label">Enrolled</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #2e9f5e; border-radius: 10px; min-height: 140px; overflow: hidden;">
+            <div class="col-md-3 col-lg-2 px-2 mb-3">
+                <div class="card ca-stat-card border-0 text-white bg-gradient-success">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-line-chart mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.active_students}}</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Active (7 Days)</div>
+                        <div class="ca-stat-icon"><i class="fa fa-bolt"></i></div>
+                        <div class="ca-stat-value">{{metrics.active_students}}</div>
+                        <div class="ca-stat-label">Active (7d)</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #17a2b8; border-radius: 10px; min-height: 140px; overflow: hidden;">
+            <div class="col-md-3 col-lg-2 px-2 mb-3">
+                <div class="card ca-stat-card border-0 text-white bg-gradient-info">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-trophy mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.completion_rate}}%</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Avg. Completion</div>
+                        <div class="ca-stat-icon"><i class="fa fa-trophy"></i></div>
+                        <div class="ca-stat-value">{{metrics.completion_rate}}%</div>
+                        <div class="ca-stat-label">Completion</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #e58e26; border-radius: 10px; min-height: 140px; overflow: hidden;">
+            <div class="col-md-3 col-lg-2 px-2 mb-3">
+                <div class="card ca-stat-card border-0 text-white bg-gradient-warning">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-cubes mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.total_modules}}</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Activities</div>
+                        <div class="ca-stat-icon"><i class="fa fa-cubes"></i></div>
+                        <div class="ca-stat-value">{{metrics.total_modules}}</div>
+                        <div class="ca-stat-label">Activities</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #8e44ad; border-radius: 10px; min-height: 140px; overflow: hidden;">
+            <div class="col-md-3 col-lg-2 px-2 mb-3">
+                <div class="card ca-stat-card border-0 text-white bg-gradient-purple">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-clock-o mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.4rem; line-height: 1; white-space: nowrap;">{{metrics.avg_time_spent}}</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Avg. Time Spent</div>
+                        <div class="ca-stat-icon"><i class="fa fa-clock"></i></div>
+                        <div class="ca-stat-value" style="font-size: 1.6rem;">{{metrics.avg_time_spent}}</div>
+                        <div class="ca-stat-label">Avg. Time</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #3d5afe; border-radius: 10px; min-height: 140px; overflow: hidden;">
+            <div class="col-md-3 col-lg-2 px-2 mb-3">
+                <div class="card ca-stat-card border-0 text-white bg-gradient-danger">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-video-camera mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.bbb}}</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">Virtual Classes</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 col-lg-2 px-2 mb-3">
-                <div class="card ca-stat-card text-white text-center" style="background-color: #e84393; border-radius: 10px; min-height: 140px; overflow: hidden;">
-                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                        <i class="fa fa-play-circle-o mb-2" style="font-size: 1.6rem; opacity: 0.85;"></i>
-                        <div class="font-weight-bold" style="font-size: 1.8rem; line-height: 1; white-space: nowrap;">{{metrics.h5p}}</div>
-                        <div class="mt-1 text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px; line-height: 1.3;">H5P Content</div>
+                        <div class="ca-stat-icon"><i class="fa fa-video"></i></div>
+                        <div class="ca-stat-value">{{metrics.bbb}}</div>
+                        <div class="ca-stat-label">Virtual</div>
                     </div>
                 </div>
             </div>
@@ -86,91 +82,92 @@
     </div>
 
     {{! ===== CHARTS ===== }}
-    <div class="row mb-5 justify-content-center">
-        <div class="col-md-6 col-lg-5 mb-3">
-            <div class="card shadow-sm border-0" style="border-radius: 12px; background: #fff;">
-                <div class="card-body text-center p-4">
-                    <h5 class="font-weight-bold mb-4" style="color: #4a4a4a; font-size: 1rem;">
-                        <i class="fa fa-pie-chart mr-2" style="color: #c00085;"></i> User Activity Breakdown
-                    </h5>
-                    <div style="position: relative; height: 260px; width: 100%; display: flex; justify-content: center;">
-                        <canvas id="courseParticipationChart"></canvas>
-                    </div>
+    <div class="row mb-5 justify-content-center px-2">
+        <div class="col-lg-5 mb-4">
+            <div class="ca-glass-card p-4 h-100">
+                <h5 class="font-weight-bold text-center mb-4 p-2 text-uppercase small letter-spacing-1" style="color: #64748b; border-bottom: 2px solid #f1f5f9;">
+                    <i class="fa fa-chart-pie mr-2 text-info"></i> User Activity Breakdown
+                </h5>
+                <div class="d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <canvas id="courseParticipationChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    {{! ===== TABS ===== }}
-    <ul class="nav nav-pills ca-nav-pills mb-4 d-flex justify-content-center pl-0" id="courseAnalyticsTabs" role="tablist">
-        <li class="nav-item w-50 max-w-sm">
-            <a class="nav-link active font-weight-bold shadow-sm text-center py-2" id="content-tab" data-toggle="tab" href="#content" role="tab" style="border-radius: 8px;">
-                <i class="fa fa-sitemap mr-2"></i> Weekly Breakdown
-            </a>
-        </li>
-        <li class="nav-item w-50 max-w-sm">
-            <a class="nav-link font-weight-bold shadow-sm text-center py-2" id="students-tab" data-toggle="tab" href="#students" role="tab" style="border-radius: 8px;">
-                <i class="fa fa-list-ul mr-2"></i> Enrolled Student List
-            </a>
-        </li>
-    </ul>
+    {{! ===== NAVIGATION TABS ===== }}
+    <div class="d-flex justify-content-center mb-5">
+        <div class="ca-glass-card p-2 d-inline-flex shadow-sm" style="border-radius: 18px;">
+            <ul class="nav nav-pills ca-nav-pills border-0" id="courseAnalyticsTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active px-5 py-3 font-weight-bold" id="content-tab" data-toggle="tab" href="#content" role="tab" style="border-radius: 14px; transition: all 0.3s;">
+                        <i class="fa fa-project-diagram mr-2"></i> Course Structure Breakdown
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-5 py-3 font-weight-bold" id="students-tab" data-toggle="tab" href="#students" role="tab" style="border-radius: 14px; transition: all 0.3s;">
+                        <i class="fa fa-user-friends mr-2"></i> Enrolled Student Metrics
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-    <div class="tab-content border-top pt-4" id="courseAnalyticsTabsContent">
-        {{! ===== CONTENT BREAKDOWN TAB ===== }}
+    <div class="tab-content" id="courseAnalyticsTabsContent">
+        {{! ===== CONTENT TAB ===== }}
         <div class="tab-pane fade show active" id="content" role="tabpanel">
-            <div class="row">
+            <div class="row px-2">
                 {{#sections}}
-                <div class="col-12 mb-4">
-                    <div class="card ca-section-card shadow-sm border-0" style="border-radius: 12px; overflow: hidden; background: #fafafa;">
-                        <div class="card-header ca-section-header d-flex justify-content-between align-items-center" style="background: transparent; border-bottom: none; padding-top: 1.5rem;">
-                            <h4 class="mb-0 font-weight-bold" style="color: #4a4a4a;">
-                                <i class="fa fa-folder mr-2" style="color: #c00085;"></i>{{{name}}}
-                            </h4>
-                            {{#is_empty}}<span class="badge" style="background-color: #f39c12; color: #fff; text-transform: uppercase;"><i class="fa fa-check mr-1"></i> ACTIVE</span>{{/is_empty}}
-                            {{^is_empty}}<span class="badge" style="background-color: #c00085; color: #fff; text-transform: uppercase; padding: 5px 15px; border-radius: 4px;"><i class="fa fa-check mr-1"></i> ACTIVE</span>{{/is_empty}}
+                <div class="col-12 mb-5">
+                    <div class="ca-table-container">
+                        <div class="p-4 bg-light border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 font-weight-bold" style="color: var(--ca-primary);">
+                                <i class="fa fa-folder-open mr-2 text-purple"></i>{{{name}}}
+                            </h5>
+                            <span class="badge badge-primary px-3 py-2 rounded-lg" style="background: var(--ca-primary);">{{#is_empty}}Empty Section{{/is_empty}}{{^is_empty}}Active Content{{/is_empty}}</span>
                         </div>
-                        <div class="card-body p-0 mt-2">
+                        <div class="p-0">
                             {{^is_empty}}
                             <div class="table-responsive">
-                                <table class="table ca-module-table mb-0 bg-white">
-                                    <thead>
-                                        <tr style="border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
-                                            <th class="border-top-0 w-50 pl-4 text-muted font-weight-bold" style="font-size:0.75rem;">ACTIVITY / RESOURCE NAME</th>
-                                            <th class="border-top-0 text-muted font-weight-bold" style="font-size:0.75rem;">TYPE</th>
-                                            <th class="border-top-0 text-center text-muted font-weight-bold" style="font-size:0.75rem;">VIEWS</th>
-                                            <th class="border-top-0 text-center text-muted font-weight-bold" style="font-size:0.75rem;">VISIBILITY</th>
-                                            <th class="border-top-0 text-center text-muted font-weight-bold" style="font-size:0.75rem;">COMPLETION ENABLED</th>
+                                <table class="table ca-table table-hover mb-0">
+                                    <thead class="ca-thead-primary">
+                                        <tr>
+                                            <th style="width: 50%;">Activity / Resource</th>
+                                            <th>Type</th>
+                                            <th class="text-center">Views</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Tracking</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {{#modules}}
-                                        <tr class="ca-module-row">
-                                            <td class="pl-4 align-middle font-weight-bold text-dark" style="font-size: 0.9rem;">
-                                                <i class="fa {{icon}} fa-fw mx-2 ca-icon text-muted"></i>
-                                                {{#url}}<a href="{{url}}" target="_blank" class="text-decoration-none text-dark">{{/url}}
-                                                {{{name}}}
-                                                {{#url}}</a>{{/url}}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded p-2 mr-3 text-primary shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fa {{icon}}"></i>
+                                                    </div>
+                                                    {{#url}}<a href="{{url}}" target="_blank" class="ca-course-link">{{/url}}
+                                                    {{{name}}}
+                                                    {{#url}}</a>{{/url}}
+                                                </div>
                                             </td>
-                                            <td class="align-middle">
-                                                <span class="badge bg-white border border-secondary text-secondary ca-badge-type font-weight-bold px-2 py-1 shadow-sm">{{type}}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-dark font-weight-bold" style="font-size: 1rem;"><i class="fa fa-eye mr-1 text-muted"></i> {{views}}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
+                                            <td><span class="badge badge-light border px-2 py-1">{{type}}</span></td>
+                                            <td class="text-center font-weight-bold">{{views}}</td>
+                                            <td class="text-center">
                                                 {{#visible}}
-                                                    <span class="badge badge-success px-3 py-1 font-weight-bold shadow-sm" style="border-radius: 12px; background-color: #5cb85c;"><i class="fa fa-eye mr-1"></i>Visible</span>
+                                                    <span class="text-success"><i class="fa fa-check-circle mr-1"></i> Visible</span>
                                                 {{/visible}}
                                                 {{^visible}}
-                                                    <span class="badge badge-secondary px-3 py-1 shadow-sm" style="border-radius: 12px;"><i class="fa fa-eye-slash mr-1"></i>Hidden</span>
+                                                    <span class="text-muted"><i class="fa fa-eye-slash mr-1"></i> Hidden</span>
                                                 {{/visible}}
                                             </td>
-                                            <td class="align-middle text-center">
+                                            <td class="text-center">
                                                 {{#completion}}
-                                                    <span class="badge badge-info px-3 py-1 font-weight-bold shadow-sm" style="border-radius: 12px; background-color: #0275d8;"><i class="fa fa-check-circle mr-1"></i>Tracked</span>
+                                                    <span class="badge badge-info rounded-pill px-3">Completion Tracked</span>
                                                 {{/completion}}
                                                 {{^completion}}
-                                                    <span class="text-muted" style="font-weight: 800; font-size:1.2rem;">&mdash;</span>
+                                                    <span class="text-muted small">Not Tracked</span>
                                                 {{/completion}}
                                             </td>
                                         </tr>
@@ -180,9 +177,9 @@
                             </div>
                             {{/is_empty}}
                             {{#is_empty}}
-                            <div class="p-4 text-center text-muted ca-empty-state">
-                                <i class="fa fa-inbox fa-3x mb-3 text-light"></i>
-                                <p class="mb-0 font-weight-bold">No modules or activities exist in this section.</p>
+                            <div class="p-5 text-center text-muted bg-white">
+                                <i class="fa fa-inbox fa-3x mb-3 opacity-25"></i>
+                                <p class="mb-0 font-weight-bold">This section is currently empty</p>
                             </div>
                             {{/is_empty}}
                         </div>
@@ -194,65 +191,75 @@
 
         {{! ===== STUDENTS TAB ===== }}
         <div class="tab-pane fade" id="students" role="tabpanel">
-            <div class="card ca-card border-0 shadow-sm">
-                <div class="card-header ca-card-header">
-                    <i class="fa fa-users mr-2"></i> Enrolled Status Log
+            <div class="ca-table-container mx-2">
+                <div class="p-4 bg-light border-bottom">
+                    <h5 class="mb-0 font-weight-bold" style="color: var(--ca-primary);"><i class="fa fa-user-shield mr-2"></i> Student Performance & Engagement Log</h5>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover ca-table mb-0">
-                            <thead class="ca-thead-secondary">
-                                <tr>
-                                    <th class="pl-4">Student Name</th>
-                                    <th>Email Address</th>
-                                    <th class="text-center">Views</th>
-                                    <th class="text-center">Assign</th>
-                                    <th class="text-center">Quiz</th>
-                                    <th class="text-center">H5P</th>
-                                    <th class="text-center">Session</th>
-                                    <th class="text-center">Grade</th>
-                                    <th class="text-center">Last Access</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#students}}
-                                <tr>
-                                    <td class="pl-4 font-weight-bold"><i class="fa fa-user-circle-o text-muted mr-2"></i>{{fullname}}</td>
-                                    <td><a href="mailto:{{email}}" class="text-muted small">{{email}}</a></td>
-                                    <td class="text-center"><span class="badge badge-info shadow-sm">{{logins}}</span></td>
-                                    <td class="text-center"><span class="badge badge-warning shadow-sm">{{assigns}}</span></td>
-                                    <td class="text-center"><span class="badge badge-success shadow-sm">{{quizzes}}</span></td>
-                                    <td class="text-center"><span class="badge badge-primary shadow-sm">{{h5p}}</span></td>
-                                    <td class="text-center"><span class="badge badge-dark shadow-sm">{{bbb}}</span></td>
-                                    <td class="text-center">
-                                        <span class="badge badge-{{grade_class}} shadow-sm px-2" style="font-size:0.8rem; font-weight:600;">{{grade}}</span>
-                                    </td>
-                                    <td class="text-center"><span class="badge badge-light border shadow-sm small">{{lastaccess}}</span></td>
-                                </tr>
-                                {{/students}}
-                                {{^students}}
-                                <tr>
-                                    <td colspan="9" class="text-center py-4 text-muted">
-                                        <i class="fa fa-user-times fa-2x mb-2"></i><br>No students are currently enrolled here.
-                                    </td>
-                                </tr>
-                                {{/students}}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table ca-table table-hover mb-0">
+                        <thead class="ca-thead-primary">
+                            <tr>
+                                <th>Student Identity</th>
+                                <th class="text-center">Activity Metrics</th>
+                                <th class="text-center">Current Grade</th>
+                                <th class="text-center">System Footprint</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#students}}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-gradient-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px; font-weight: 800;">
+                                            {{#str}}user, core{{/str}}
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span class="font-weight-bold text-dark" style="font-size: 1.1rem;">{{fullname}}</span>
+                                            <span class="text-muted small">{{email}}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                        <span class="badge badge-light border" title="Views">V: {{logins}}</span>
+                                        <span class="badge badge-light border" title="Assignments">A: {{assigns}}</span>
+                                        <span class="badge badge-light border" title="Quizzes">Q: {{quizzes}}</span>
+                                        <span class="badge badge-light border" title="Virtual Sessions">S: {{bbb}}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="ca-pct-badge font-weight-bold px-4 py-2" style="background: var(--ca-background); font-size: 1rem; border: 2px solid rgba(var(--ca-primary), 0.1);">
+                                         <span class="text-{{grade_class}}">{{grade}}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center px-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <span class="text-muted small mb-1">Last seen on platform</span>
+                                        <span class="badge badge-light border px-3 py-2" style="border-radius: 10px;">{{lastaccess}}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/students}}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
     {{! ===== FOOTER ===== }}
-    <footer class="text-center text-muted mt-5 py-3 border-top small ca-footer">
-        {{{footer_text}}}
+    <footer class="text-center text-muted mt-5 py-5 border-top">
+        <div style="letter-spacing: 1px; font-weight: 700; font-size: 0.8rem;">
+            {{{footer_text}}}
+        </div>
     </footer>
 </div>
 
 {{#js}}
 require(['core/chartjs'], function(Chart) {
+
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
     var ctxPart = document.getElementById('courseParticipationChart');
     if (ctxPart) {
         new Chart(ctxPart.getContext('2d'), {
@@ -261,19 +268,18 @@ require(['core/chartjs'], function(Chart) {
                 labels: ['Active Students', 'Inactive Students'],
                 datasets: [{
                     data: [{{metrics.active_students}}, {{metrics.inactive_students}}],
-                    backgroundColor: ['#2e9f5e', '#e58e26'],
-                    borderWidth: 2,
-                    hoverOffset: 4
+                    backgroundColor: ['#2ecc71', '#f39c12'],
+                    borderWidth: 0,
+                    borderRadius: 15,
+                    spacing: 10
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '75%',
                 plugins: { 
-                    legend: { 
-                        position: 'bottom',
-                        labels: { padding: 20, font: { weight: 'bold' } }
-                    } 
+                    legend: { position: 'bottom', labels: { padding: 30, font: { weight: '800' } } } 
                 }
             }
         });

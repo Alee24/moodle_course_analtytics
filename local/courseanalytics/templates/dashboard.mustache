@@ -1,279 +1,280 @@
-<div class="local_courseanalytics_dashboard container-fluid py-3">
+<div class="local_courseanalytics_dashboard container-fluid py-5 px-md-5">
 
     {{! ===== HEADER ===== }}
-    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom flex-wrap gap-2">
-        <h1 class="ca-page-title d-flex align-items-center m-0" style="font-size: 2.2rem; color: #1e3a5f;">
-            <i class="fa fa-bar-chart mr-3" style="color: #1e3a5f;"></i>
-            <span class="font-weight-bold">Manage Course Analytics</span>
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-4 px-2">
+        <h1 class="ca-page-title d-flex align-items-center m-0">
+            <div class="mr-4 bg-gradient-primary text-white d-flex align-items-center justify-content-center shadow-lg" style="width: 65px; height: 65px; border-radius: 18px;">
+                <i class="fa fa-chart-line" style="font-size: 1.8rem;"></i>
+            </div>
+            <div class="d-flex flex-column">
+                <span class="ca-page-title">{{#str}}manageanalytics, local_courseanalytics{{/str}}</span>
+                <span class="text-muted small font-weight-bold text-uppercase mt-1" style="letter-spacing: 2px; opacity: 0.7;">Premium Performance Dashboard</span>
+            </div>
         </h1>
-        <div class="d-flex gap-2">
-            <a href="{{urls.update}}" class="btn btn-outline-info shadow-sm px-3 py-2 font-weight-bold mr-2" style="border-radius: 8px;">
-                <i class="fa fa-git mr-1"></i> Update from Git
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{urls.update}}" class="btn btn-outline-info shadow-sm px-4 py-3 font-weight-bold mr-3" style="border-radius: 14px; border-width: 2px; transition: all 0.3s ease;">
+                <i class="fa fa-git mr-2"></i> Update from Git
             </a>
-            <a href="{{urls.export}}" class="btn btn-success shadow-sm px-4 py-2 font-weight-bold" style="background-color: #6a9c47; border-color: #6a9c47; border-radius: 8px;">
-                <i class="fa fa-file-excel-o mr-2"></i> Export to Excel
+            <a href="{{urls.export}}" class="btn btn-success shadow-lg px-5 py-3 font-weight-bold" style="background: linear-gradient(135deg, #27ae60, #2ecc71); border: none; border-radius: 14px; transition: all 0.3s ease;">
+                <i class="fa fa-file-excel-o mr-2"></i> Export Report
             </a>
         </div>
     </div>
 
     {{! ===== UPDATE NOTIFICATION ===== }}
     {{#update_available}}
-    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-4 shadow-sm" style="border-radius: 12px; border-left: 5px solid #f39c12; background-color: #fffcf0;">
+    <div class="ca-glass-card alert alert-warning d-flex justify-content-between align-items-center mb-5 p-4 border-0 shadow-lg" style="border-left: 6px solid #f39c12 !important; background-color: #fffcf0;">
         <div class="d-flex align-items-center">
-            <i class="fa fa-cloud-download fa-3x mr-3 text-warning"></i>
+            <div class="bg-warning text-white p-4 rounded-circle mr-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 80px; height: 80px;">
+                <i class="fa fa-cloud-download fa-2x"></i>
+            </div>
             <div>
-                <h5 class="mb-1 font-weight-bold" style="color: #856404;">{{#str}}update_available, local_courseanalytics{{/str}}</h5>
-                <p class="mb-0 text-muted" style="font-size: 0.9rem;">{{#str}}update_info, local_courseanalytics{{/str}}</p>
+                <h4 class="mb-1 font-weight-bold" style="color: #856404;">{{#str}}update_available, local_courseanalytics{{/str}}</h4>
+                <p class="mb-0 text-muted" style="font-size: 1.1rem;">{{#str}}update_info, local_courseanalytics{{/str}}</p>
             </div>
         </div>
-        <a href="{{urls.update}}" class="btn btn-warning font-weight-bold px-4 shadow-sm text-uppercase" style="border-radius: 8px;">
-            <i class="fa fa-refresh mr-1"></i> {{#str}}update_now, local_courseanalytics{{/str}}
+        <a href="{{urls.update}}" class="btn btn-warning font-weight-bold px-5 py-3 shadow-lg text-uppercase" style="border-radius: 12px; font-size: 1rem;">
+            <i class="fa fa-sync-alt mr-2"></i> {{#str}}update_now, local_courseanalytics{{/str}}
         </a>
     </div>
     {{/update_available}}
 
-    {{! ===== FILTER ===== }}
-    <div class="card ca-card mb-4 border-0 shadow-sm" style="border-radius: 12px; background: #fff;">
-        <div class="card-body p-4">
-            <form action="{{urls.index}}" method="get" class="form-inline d-flex flex-wrap gap-3 align-items-center">
-                <div class="form-group mr-3 mb-2">
-                    <label class="mr-2 font-weight-bold text-dark">Filter by Category:</label>
-                    <select name="category" class="custom-select shadow-sm" style="border-radius: 6px;">
-                        <option value="" {{#require_category}}selected{{/require_category}}>-- All Categories --</option>
-                        {{#categories}}
-                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                        {{/categories}}
-                    </select>
-                </div>
-                
-                <div class="form-group mr-3 mb-2">
-                    <label class="mr-2 font-weight-bold text-dark">Course Shortcode:</label>
-                    <input type="text" name="coursecode" value="{{filters.coursecode}}" placeholder="e.g. COMP101" class="form-control shadow-sm" style="border-radius: 6px;">
-                </div>
+    {{! ===== FILTER AREA ===== }}
+    <div class="ca-filter-panel mb-5">
+        <form action="{{urls.index}}" method="get" class="row align-items-end g-4">
+            <div class="col-md-4">
+                <label class="ca-filter-label">Filter by Category</label>
+                <select name="category" class="custom-select ca-form-control">
+                    <option value="" {{#require_category}}selected{{/require_category}}>-- View All Categories --</option>
+                    {{#categories}}
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                    {{/categories}}
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <label class="ca-filter-label">Course Shortcode</label>
+                <input type="text" name="coursecode" value="{{filters.coursecode}}" placeholder="e.g. COMP101" class="form-control ca-form-control">
+            </div>
 
-                <div class="form-group mr-3 mb-2">
-                    <label class="mr-2 font-weight-bold text-dark">Lecturer Email:</label>
-                    <input type="email" name="lectureremail" value="{{filters.lectureremail}}" placeholder="e.g. jdoe@university.edu" class="form-control shadow-sm" style="border-radius: 6px;">
-                </div>
+            <div class="col-md-3">
+                <label class="ca-filter-label">Lecturer Email</label>
+                <input type="email" name="lectureremail" value="{{filters.lectureremail}}" placeholder="e.g. name@university.edu" class="form-control ca-form-control">
+            </div>
 
-                <div class="form-group mb-2 ml-auto">
-                    <button type="submit" class="btn text-white font-weight-bold shadow-sm px-4" style="background-color: #c00085; border-radius: 8px;">
-                        <i class="fa fa-filter mr-1"></i> Apply Filters
-                    </button>
-                    <a href="{{urls.index}}" class="btn btn-outline-secondary ml-2 shadow-sm font-weight-bold" style="border-radius: 8px;">
-                        <i class="fa fa-refresh"></i> Clear
-                    </a>
-                </div>
-            </form>
-        </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary font-weight-bold px-4 py-3 shadow-lg flex-fill" style="background: var(--ca-primary); border: none; border-radius: 14px;">
+                    <i class="fa fa-search mr-1"></i> Apply
+                </button>
+                <a href="{{urls.index}}" class="btn btn-light px-4 py-3 shadow-sm" style="border-radius: 14px; border: 1px solid #e2e8f0;">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </form>
     </div>
 
     {{#require_category}}
-    <div class="alert alert-info text-center py-5 shadow-sm ca-card border-0" style="background-color: #e0f2f1; border-radius: 12px;">
-        <i class="fa fa-info-circle fa-4x mb-3 text-info opacity-75" style="color: #00897b !important;"></i>
-        <h3 class="font-weight-bold text-dark">Welcome to Course Analytics</h3>
-        <p class="lead mb-0 text-secondary">Please select a category or enter a search filter above to load course statistics.</p>
+    <div class="ca-empty-state">
+        <div class="ca-empty-icon">
+            <i class="fa fa-rocket"></i>
+        </div>
+        <h2 class="ca-empty-title">Welcome to Course Analytics</h2>
+        <p class="lead text-muted mx-auto mb-4" style="max-width: 600px;">
+            Select a course category or use the search filters above to explore detailed participation metrics and performance indicators across your courses.
+        </p>
+        <div class="mt-5 pt-3 d-flex justify-content-center gap-3">
+            <div class="px-4 py-3 border rounded-lg text-muted small font-weight-bold bg-light">
+                <i class="fa fa-check-circle text-success mr-2"></i> Real-time Monitoring
+            </div>
+            <div class="px-4 py-3 border rounded-lg text-muted small font-weight-bold bg-light">
+                <i class="fa fa-check-circle text-info mr-2"></i> Advanced Reports
+            </div>
+        </div>
     </div>
     {{/require_category}}
 
     {{^require_category}}
     {{! ===== SUMMARY CARDS ===== }}
-    <div class="row mb-5 justify-content-center">
+    <div class="row mb-5 justify-content-center px-2">
         <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white text-center h-100" style="background-color: #1e3a5f; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 12px;">
-                <div class="card-body d-flex flex-column justify-content-center p-4 py-5">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-book" style="font-size: 2.5rem; opacity: 0.9;"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 3.2rem; line-height: 1;">{{total_courses}}</div>
-                    <div class="ca-stat-label mt-2 text-uppercase font-weight-bold" style="font-size: 0.85rem; letter-spacing: 1px;">COURSES</div>
+            <div class="card ca-stat-card border-0 text-white bg-gradient-primary">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <div class="ca-stat-icon"><i class="fa fa-university"></i></div>
+                    <div class="ca-stat-value">{{total_courses}}</div>
+                    <div class="ca-stat-label">Active Courses</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white text-center h-100" style="background-color: #27ae60; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 12px;">
-                <div class="card-body d-flex flex-column justify-content-center p-4 py-5">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-users" style="font-size: 2.5rem; opacity: 0.9;"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 3.2rem; line-height: 1;">{{charts.participation.active}}</div>
-                    <div class="ca-stat-label mt-2 text-uppercase font-weight-bold" style="font-size: 0.85rem; letter-spacing: 1px;">ACTIVE STUDENTS (7 DAYS)</div>
+            <div class="card ca-stat-card border-0 text-white bg-gradient-success">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <div class="ca-stat-icon"><i class="fa fa-bolt"></i></div>
+                    <div class="ca-stat-value">{{charts.participation.active}}</div>
+                    <div class="ca-stat-label">Students Active</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white text-center h-100" style="background-color: #e67e22; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 12px;">
-                <div class="card-body d-flex flex-column justify-content-center p-4 py-5">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-user-times" style="font-size: 2.5rem; opacity: 0.9;"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 3.2rem; line-height: 1;">{{charts.participation.inactive}}</div>
-                    <div class="ca-stat-label mt-2 text-uppercase font-weight-bold" style="font-size: 0.85rem; letter-spacing: 1px;">INACTIVE STUDENTS</div>
+            <div class="card ca-stat-card border-0 text-white bg-gradient-warning">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <div class="ca-stat-icon"><i class="fa fa-user-clock"></i></div>
+                    <div class="ca-stat-value">{{charts.participation.inactive}}</div>
+                    <div class="ca-stat-label">Students Inactive</div>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white text-center h-100" style="background-color: #00bcd4; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 12px;">
-                <div class="card-body d-flex flex-column justify-content-center p-4 py-5">
-                    <div class="ca-stat-icon mb-3"><i class="fa fa-pie-chart" style="font-size: 2.5rem; opacity: 0.9;"></i></div>
-                    <div class="ca-stat-value font-weight-bold" style="font-size: 2.5rem; line-height: 1; padding: 11px 0;">
-                        {{#charts.participation.active}}
-                            {{#charts.participation.inactive}} — {{/charts.participation.inactive}}
-                        {{/charts.participation.active}}
-                        {{^charts.participation.active}}—{{/charts.participation.active}}
+            <div class="card ca-stat-card border-0 text-white bg-gradient-info">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <div class="ca-stat-icon"><i class="fa fa-bullseye"></i></div>
+                    <div class="ca-stat-value" style="font-size: 2.2rem;">
+                        {{#total_courses}}OVERVIEW{{/total_courses}}
+                        {{^total_courses}}--{{/total_courses}}
                     </div>
-                    <div class="ca-stat-label mt-2 text-uppercase font-weight-bold" style="font-size: 0.85rem; letter-spacing: 1px;">PARTICIPATION OVERVIEW</div>
+                    <div class="ca-stat-label">Engagement Level</div>
                 </div>
             </div>
         </div>
     </div>
 
     {{! ===== CHARTS ===== }}
-    <div class="row mb-5">
-        <div class="col-md-4 mb-4 mb-md-0">
-            <div class="card ca-card border-0 h-100" style="border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); background: #fdfdfd;">
-                <div class="card-header border-bottom-0 bg-transparent pt-4 pb-2 text-center">
-                    <h5 class="font-weight-bold text-muted mb-0 mx-auto" style="color: #cbd5e1 !important; font-size: 0.95rem; text-transform: uppercase;">Student Participation</h5>
-                </div>
-                <div class="card-body d-flex align-items-center justify-content-center p-4">
-                    <canvas id="participationChart" style="max-height:260px;"></canvas>
+    <div class="row mb-5 px-2">
+        <div class="col-lg-4 mb-4">
+            <div class="ca-glass-card h-100 p-4">
+                <h5 class="font-weight-bold text-center mb-4 p-2 text-uppercase small letter-spacing-1" style="color: #64748b; border-bottom: 2px solid #f1f5f9;">
+                    <i class="fa fa-chart-pie mr-2 text-info"></i> Participation
+                </h5>
+                <div class="d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <canvas id="participationChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="card ca-card border-0 h-100" style="border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); background: #fdfdfd;">
-                <div class="card-header border-bottom-0 bg-transparent pt-4 pb-2 text-center">
-                    <h5 class="font-weight-bold text-muted mb-0 mx-auto" style="color: #cbd5e1 !important; font-size: 0.95rem; text-transform: uppercase;">Completion Rate by Course</h5>
-                </div>
-                <div class="card-body p-4">
-                    <canvas id="engagementChart" style="max-height:260px;"></canvas>
+        <div class="col-lg-8 mb-4">
+            <div class="ca-glass-card h-100 p-4">
+                <h5 class="font-weight-bold text-center mb-4 p-2 text-uppercase small letter-spacing-1" style="color: #64748b; border-bottom: 2px solid #f1f5f9;">
+                    <i class="fa fa-chart-bar mr-2 text-success"></i> Completion Trends
+                </h5>
+                <div style="height: 300px;">
+                    <canvas id="engagementChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     {{! ===== MAIN TABLE ===== }}
-    <div class="card ca-card border-0 mb-5" style="border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.03);">
-        <div class="card-header border-bottom py-4 bg-transparent d-flex justify-content-between align-items-center" style="background: #fdfdfd;">
-            <h5 class="font-weight-bold text-muted mb-0 mx-auto" style="color: #e2e8f0 !important;"><i class="fa fa-table mr-2" style="color: #cbd5e1 !important;"></i>Course Statistics ({{total_courses}} courses)</h5>
-            <a href="{{urls.export}}" class="btn btn-sm btn-outline-success font-weight-bold px-3 shadow-sm mx-auto" style="border-radius: 6px;">
-                <i class="fa fa-download mr-1"></i> Download Excel
-            </a>
+    <div class="ca-table-container mb-5">
+        <div class="p-4 d-flex justify-content-between align-items-center bg-light border-bottom">
+            <h5 class="font-weight-bold text-muted mb-0"><i class="fa fa-list-ul mr-2 text-primary"></i> Course Metrics Overview</h5>
+            <span class="badge badge-primary px-3 py-2 rounded-lg" style="background: var(--ca-primary);">{{total_courses}} Courses Listed</span>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover ca-table mb-0 text-nowrap">
-                    <thead style="background-color: #f8f9fa;">
-                        <tr>
-                            <th rowspan="2" class="align-middle text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: none;">#</th>
-                            <th rowspan="2" class="align-middle text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: none;">Course Name</th>
-                            <th rowspan="2" class="align-middle text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: none;">Category</th>
-                            <th colspan="3" class="text-center text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #e9ecef;">Lecturer</th>
-                            <th colspan="4" class="text-center text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #e9ecef;">Students</th>
-                            <th colspan="8" class="text-center text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #e9ecef;">Course Content</th>
-                            <th rowspan="2" class="align-middle text-center text-muted text-uppercase bg-transparent" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: none;">Actions</th>
-                        </tr>
-                        <tr>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Name</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Email</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Last Login</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Total</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Active (7d)</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Inactive</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Completion %</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-play-circle" title="H5P Interactive"></i> H5P</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-tasks" title="Assignments"></i> Assign</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-question-circle" title="Quizzes"></i> Quiz</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-comments" title="Forums"></i> Forum</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-file" title="Files"></i> Files</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-video-camera" title="Videos"></i> Videos</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;"><i class="fa fa-link" title="URLs"></i> URLs</th>
-                            <th class="text-muted text-uppercase bg-transparent" style="font-size: 0.7rem; border-top: none;">Total Res.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#courses}}
-                        <tr>
-                            <td class="text-center text-muted small">{{@index}}</td>
-                            <td><a href="{{url}}" class="ca-course-link">{{fullname}}</a></td>
-                            <td><span class="badge badge-secondary">{{categoryname}}</span></td>
-                            <td class="small align-middle">
-                                {{#lecturers}}
-                                    <div class="ca-multi-item">{{name}}</div>
-                                {{/lecturers}}
-                                {{^lecturers}}<span class="text-muted">-</span>{{/lecturers}}
-                            </td>
-                            <td class="small align-middle">
-                                {{#lecturers}}
-                                    <div class="ca-multi-item"><a href="mailto:{{email}}">{{email}}</a></div>
-                                {{/lecturers}}
-                                {{^lecturers}}<span class="text-muted">-</span>{{/lecturers}}
-                            </td>
-                            <td class="small ca-lastaccess align-middle">
-                                {{#lecturers}}
-                                    <div class="ca-multi-item">{{lastaccess}}</div>
-                                {{/lecturers}}
-                                {{^lecturers}}<span class="text-muted">-</span>{{/lecturers}}
-                            </td>
-                            <td class="text-center"><span class="badge badge-info">{{total_students}}</span></td>
-                            <td class="text-center"><span class="badge badge-success">{{active_students}}</span></td>
-                            <td class="text-center"><span class="badge badge-warning">{{inactive_students}}</span></td>
-                            <td class="text-center">
+        
+        <div class="table-responsive">
+            <table class="table ca-table table-hover mb-0">
+                <thead class="ca-thead-primary">
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Course Module</th>
+                        <th>Status</th>
+                        <th>Students</th>
+                        <th>Engagement</th>
+                        <th class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#courses}}
+                    <tr>
+                        <td class="text-muted font-weight-normal">{{@index}}</td>
+                        <td>
+                            <div class="d-flex flex-column">
+                                <a href="{{url}}" class="ca-course-link mb-1">{{fullname}}</a>
+                                <span class="text-muted small"><i class="fa fa-folder-open mr-1"></i> {{categoryname}}</span>
+                            </div>
+                        </td>
+                        <td>
+                             <span class="badge badge-light p-2 border" style="border-radius: 8px;">Active</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center text-muted small">
+                                <strong class="text-dark font-weight-bold mr-1">{{total_students}}</strong> members
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress mr-3" style="height: 8px; width: 80px; border-radius: 4px; background-color: #f1f5f9;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{completion_rate}}%; border-radius: 4px;"></div>
+                                </div>
                                 <span class="ca-pct-badge">{{completion_rate}}%</span>
-                            </td>
-                            <td class="text-center font-weight-bold text-info">{{h5p}}</td>
-                            <td class="text-center">{{assignments}}</td>
-                            <td class="text-center">{{quizzes}}</td>
-                            <td class="text-center">{{forums}}</td>
-                            <td class="text-center">{{files}}</td>
-                            <td class="text-center">{{videos}}</td>
-                            <td class="text-center">{{urls}}</td>
-                            <td class="text-center"><strong>{{total_modules}}</strong></td>
-                            <td class="text-center">
-                                <a href="{{url}}" class="btn btn-sm btn-primary ca-btn-detail">
-                                    <i class="fa fa-eye mr-1"></i> Details
-                                </a>
-                            </td>
-                        </tr>
-                        {{/courses}}
-                        {{^has_courses}}
-                        <tr>
-                            <td colspan="19" class="text-center py-4 text-muted">
-                                <i class="fa fa-inbox fa-2x mb-2"></i><br>No courses found.
-                            </td>
-                        </tr>
-                        {{/has_courses}}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <a href="{{url}}" class="ca-btn-detail">
+                                View Full Analytics <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/courses}}
+                    {{^has_courses}}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="fa fa-frown fa-3x mb-3 opacity-25"></i><br>
+                            <span class="font-weight-bold">No results found for your filters.</span>
+                        </td>
+                    </tr>
+                    {{/has_courses}}
+                </tbody>
+            </table>
         </div>
     </div>
     {{/require_category}}
 
     {{! ===== FOOTER ===== }}
-    <footer class="text-center text-muted mt-3 py-3 border-top small">
-        {{{footer_text}}}
+    <footer class="text-center text-muted mt-5 py-5 border-top">
+        <div class="d-flex flex-column align-items-center">
+            <div class="mb-3">
+                <img src="https://moodle.org/logo/moodle-logo.svg" height="25" style="filter: grayscale(1); opacity: 0.5;" />
+            </div>
+            <div style="letter-spacing: 1px; font-weight: 700; font-size: 0.8rem;">
+                {{{footer_text}}}
+            </div>
+        </div>
     </footer>
 </div>
 
 {{#js}}
 require(['core/chartjs'], function(Chart) {
 
-    // Participation Pie Chart
+    // Global Chart Config
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#64748b';
+
+    // Participation Chart
     var ctx1 = document.getElementById('participationChart');
     if (ctx1) {
         new Chart(ctx1.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['Active (7d)', 'Inactive'],
+                labels: ['Active Students', 'Inactive Students'],
                 datasets: [{
                     data: [{{charts.participation.active}}, {{charts.participation.inactive}}],
-                    backgroundColor: ['#28a745', '#ffc107'],
-                    borderWidth: 2
+                    backgroundColor: ['#2ecc71', '#f39c12'],
+                    hoverBackgroundColor: ['#27ae60', '#e67e22'],
+                    borderWidth: 0,
+                    borderRadius: 10,
+                    spacing: 10
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
             }
         });
     }
 
-    // Completion Bar Chart
+    // Engagement Chart
     var ctx2 = document.getElementById('engagementChart');
     if (ctx2) {
         new Chart(ctx2.getContext('2d'), {
@@ -281,17 +282,30 @@ require(['core/chartjs'], function(Chart) {
             data: {
                 labels: [{{#charts.engagement.labels}}'{{.}}',{{/charts.engagement.labels}}],
                 datasets: [{
-                    label: 'Completion %',
+                    label: 'Completion Progress (%)',
                     data: [{{#charts.engagement.data}}{{.}},{{/charts.engagement.data}}],
-                    backgroundColor: 'rgba(0,123,255,0.7)',
-                    borderColor: '#007bff',
-                    borderWidth: 1
+                    backgroundColor: 'rgba(30, 58, 95, 0.8)',
+                    hoverBackgroundColor: 'rgba(52, 152, 219, 1)',
+                    borderRadius: 8,
+                    barThickness: 30
                 }]
             },
             options: {
                 responsive: true,
-                scales: { y: { beginAtZero: true, max: 100 } },
-                plugins: { legend: { display: false } }
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 100,
+                        grid: { borderDash: [5, 5], drawBorder: false }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
             }
         });
     }

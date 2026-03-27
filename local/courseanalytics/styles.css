@@ -3,256 +3,287 @@
    Developed by KKDES | https://kkdes.co.ke/
    ================================================= */
 
+:root {
+    --ca-primary: #1e3a5f;
+    --ca-primary-light: #2c538a;
+    --ca-secondary: #c00085;
+    --ca-background: #f4f7fa;
+    --ca-card-shadow: 0 10px 25px rgba(30, 58, 95, 0.08);
+    --ca-hover-shadow: 0 15px 35px rgba(30, 58, 95, 0.15);
+    --ca-glass: rgba(255, 255, 255, 0.85);
+}
+
 .local_courseanalytics_dashboard,
 .local_courseanalytics_details {
-    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-    color: #2c3e50;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #334155;
+    background-color: var(--ca-background);
 }
 
 /* Page title */
 .ca-page-title {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: #1e3a5f;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--ca-primary);
+    letter-spacing: -0.5px;
     margin-bottom: 0;
+}
+
+/* ---- Glassmorphism & Cards ---- */
+.ca-glass-card {
+    background: var(--ca-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    box-shadow: var(--ca-card-shadow);
+    transition: all 0.3s ease;
+}
+
+.ca-glass-card:hover {
+    box-shadow: var(--ca-hover-shadow);
 }
 
 /* ---- Stat Cards ---- */
 .ca-stat-card {
     border: none;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 24px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+}
+
+.ca-stat-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .ca-stat-card:hover {
-    transform: translateY(-5px);
+    transform: scale(1.05) translateY(-8px);
 }
 
 .ca-stat-icon {
-    font-size: 2.2rem;
-    opacity: 0.85;
-    margin-bottom: 10px;
+    font-size: 2.5rem;
+    opacity: 0.9;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
 }
 
 .ca-stat-value {
-    font-size: 2.4rem;
-    font-weight: 800;
-    line-height: 1.1;
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1;
 }
 
 .ca-stat-label {
-    font-size: 0.85rem;
-    opacity: 0.95;
-    margin-top: 5px;
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
+    letter-spacing: 1.2px;
+    font-weight: 700;
 }
 
+/* ---- Advanced Gradients ---- */
 .bg-gradient-primary {
-    background: linear-gradient(135deg, #1e3a5f 0%, #2980b9 100%);
+    background: linear-gradient(135deg, #1e3a5f 0%, #3498db 100%);
 }
 
 .bg-gradient-success {
-    background: linear-gradient(135deg, #1a7a4a 0%, #27ae60 100%);
+    background: linear-gradient(135deg, #16a085 0%, #2ecc71 100%);
 }
 
 .bg-gradient-warning {
-    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+    background: linear-gradient(135deg, #d35400 0%, #f39c12 100%);
 }
 
 .bg-gradient-info {
-    background: linear-gradient(135deg, #2171a7 0%, #00bcd4 100%);
+    background: linear-gradient(135deg, #2980b9 0%, #6dd5fa 100%);
 }
 
-/* ---- Navigation Tabs/Pills ---- */
-.ca-nav-pills {
-    background: transparent;
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-.ca-nav-pills .nav-link {
-    border-radius: 8px;
-    color: #4a4a4a;
-    background-color: #f8f9fa;
-    margin: 0 5px;
-    transition: all 0.2s;
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
 }
 
-.ca-nav-pills .nav-link:hover {
-    background-color: #e2e8f0;
+/* ---- Filter Area ---- */
+.ca-filter-panel {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 15px 40px rgba(30, 58, 95, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    margin-bottom: 2rem;
 }
 
-.ca-nav-pills .nav-link.active {
-    background-color: #c00085;
-    color: white;
-}
-
-/* ---- Generic cards ---- */
-.ca-card {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-}
-
-.ca-card-header {
-    background: #1e3a5f;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 0.75rem 1rem;
-}
-
-/* ---- Specific Details CSS ---- */
-.ca-section-card {
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
-}
-
-.ca-section-header {
-    background: #f8f9fa;
-    border-bottom: 1px solid #edf2f7;
-    padding: 1.25rem 1.5rem;
-    border-top-left-radius: 10px !important;
-    border-top-right-radius: 10px !important;
-}
-
-.ca-empty-state {
-    background-color: #f8fafc;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-.ca-module-table th {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.ca-filter-label {
+    font-weight: 700;
     color: #64748b;
-    padding: 1rem;
-}
-
-.ca-module-row td {
-    padding: 1rem;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.ca-module-row:last-child td {
-    border-bottom: none;
-}
-
-.ca-module-link {
-    color: #1e3a5f;
-    transition: color 0.1s ease;
-}
-
-.ca-module-link:hover {
-    color: #3498db;
-}
-
-.ca-badge-type {
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-size: 0.65rem;
-    padding: 4px 8px;
 }
 
-/* ---- Main Table ---- */
+.ca-form-control {
+    border-radius: 14px !important;
+    border: 2px solid #f1f5f9 !important;
+    padding: 0.85rem 1.25rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    color: #1e293b !important;
+    height: auto !important;
+}
+
+.ca-form-control:focus {
+    border-color: var(--ca-primary) !important;
+    box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.1) !important;
+    background: #fff !important;
+}
+
+/* ---- Responsive Table Styling ---- */
+.ca-table-container {
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--ca-card-shadow);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
 .ca-table {
-    font-size: 0.82rem;
-    white-space: nowrap;
-}
-
-.ca-table th,
-.ca-table td {
-    vertical-align: middle !important;
-    padding: 0.45rem 0.65rem;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100%;
 }
 
 .ca-thead-primary th {
-    background: #1e3a5f;
-    color: #fff;
-    font-size: 0.78rem;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    border-color: #2c4e80;
+    letter-spacing: 1px;
+    padding: 1.5rem !important;
+    border-bottom: 2px solid #f1f5f9 !important;
+    border-top: none !important;
 }
 
-.ca-thead-secondary th {
-    background: #2c4e80;
-    color: #d6e4ff;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    border-color: #3a5e90;
+.ca-table td {
+    padding: 1.5rem !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155;
+    font-weight: 500;
+}
+
+.ca-table tbody tr {
+    transition: all 0.2s ease;
 }
 
 .ca-table tbody tr:hover {
-    background-color: #eef4fd !important;
+    background-color: #f8fafc !important;
 }
 
-/* Dashboard Course Link */
+.ca-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Links & Badges */
 .ca-course-link {
-    color: #1e3a5f;
-    font-weight: 600;
+    color: var(--ca-primary);
+    font-weight: 700;
     text-decoration: none;
+    font-size: 1.05rem;
+    transition: color 0.2s;
 }
 
 .ca-course-link:hover {
-    color: #2980b9;
-    text-decoration: underline;
+    color: #3498db;
+    text-decoration: none;
 }
 
-/* User Last Access cell */
-.ca-lastaccess {
-    color: #555;
-    font-size: 0.78rem;
+.ca-pct-badge {
+    padding: 8px 16px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    background: rgba(30, 58, 95, 0.05);
+    color: var(--ca-primary);
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(30, 58, 95, 0.1);
+}
+
+/* Detail Button */
+.ca-btn-detail {
+    background: var(--ca-primary);
+    color: #fff !important;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ca-btn-detail:hover {
+    background: #3498db;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+    text-decoration: none;
+}
+
+/* Empty State */
+.ca-empty-state {
+    padding: 6rem 2rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 28px;
+    box-shadow: var(--ca-card-shadow);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.ca-empty-icon {
+    font-size: 6rem;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+}
+
+.ca-empty-title {
+    color: #1e293b;
+    font-weight: 900;
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
 }
 
 .ca-multi-item {
-    padding: 3px 0;
+    padding: 4px 0;
+    font-size: 0.85rem;
 }
 
-.ca-multi-item:not(:last-child) {
-    border-bottom: 1px dashed #e2e8f0;
-    margin-bottom: 3px;
+.ca-multi-item a {
+    color: #64748b;
+    text-decoration: none;
 }
 
-/* Completion badge */
-.ca-pct-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.8rem;
-    padding: 2px 8px;
-    border-radius: 20px;
-    min-width: 46px;
-    text-align: center;
-}
-
-/* Detail button */
-.ca-btn-detail {
-    border-radius: 20px;
-    font-size: 0.78rem;
-    padding: 3px 12px;
-}
-
-/* Badges */
-.badge-info {
-    background-color: #2196F3;
-}
-
-.badge-success {
-    background-color: #27ae60;
-}
-
-.badge-warning {
-    background-color: #f39c12;
-    color: #fff;
-}
-
-/* Footer */
-footer.ca-footer.border-top {
-    border-color: #e2e8f0 !important;
+.ca-multi-item a:hover {
+    color: var(--ca-primary);
 }

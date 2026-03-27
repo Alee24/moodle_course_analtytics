@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseanalytics';
-$plugin->version   = 2024052027; // v1.3.7: Secure git updates by isolating to plugin folder
+$plugin->version   = 2024052028; // v2.0.0: Full Premium UI/UX Redesign
 $plugin->requires  = 2022111800; // Moodle 4.1 or later
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v1.3.7';
+$plugin->release   = 'v2.0.0';
