@@ -11,9 +11,12 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/enrol/locallib.php');
 
-$id = required_param('id', PARAM_INT);
-$course = get_course($id);
+$id = optional_param('id', 0, PARAM_INT);
+if (!$id) {
+    redirect(new moodle_url('/local/courseanalytics/index.php'), 'The course ID param is required', 3);
+}
 
+$course = get_course($id);
 require_login($course);
 $context = context_course::instance($id);
 require_capability('local/courseanalytics:view', $context);

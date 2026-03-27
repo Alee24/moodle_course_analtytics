@@ -263,6 +263,7 @@ class course_manager {
 
         $active_cutoff  = time() - (7 * 24 * 60 * 60);
         $active_count   = 0;
+        $completed_count = 0;
         
         // Count active users in THIS course specifically (not site-wide)
         $sql_active = "SELECT COUNT(DISTINCT userid) FROM {user_lastaccess} 
@@ -298,6 +299,19 @@ class course_manager {
             // Average progress = (Total completed actions) / (Students * Activities)
             $potential_completions = $total_students * $tracked_activities_count;
             $completion_rate = round(($total_completed_actions / $potential_completions) * 100, 1);
+
+            // Fetch number of students who completed 100% of tracked items
+            $sql_compl = "SELECT COUNT(*) FROM (
+                            SELECT userid FROM {course_modules_completion} cmc
+                            JOIN {course_modules} cm ON cmc.coursemoduleid = cm.id
+                            WHERE cm.course = :courseid AND cmc.completionstate IN (1, 2)
+                            GROUP BY userid
+                            HAVING COUNT(cmc.id) >= :min_count
+                          ) as sub";
+            $completed_count = (int)$DB->count_records_sql($sql_compl, [
+                'courseid' => $courseid, 
+                'min_count' => $tracked_activities_count
+            ]);
         }
 
         // Fetch logs (Views/Time) regardless of mode to avoid N/A
