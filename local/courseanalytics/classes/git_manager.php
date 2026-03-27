@@ -15,20 +15,26 @@ class git_manager {
     public static function has_update() {
         global $CFG;
         $path = $CFG->dirroot . '/local/courseanalytics';
+
+        // Ensure we are in a git repository
+        if (!is_dir($path . '/.git')) {
+            return false;
+        }
         
         try {
-            // Fetch latest from remote (this needs the web server to have git access)
-            @exec("cd " . escapeshellarg($path) . " && git fetch origin main 2>&1", $output, $return_var);
+            // We use --git-dir and --work-tree to be absolutely sure we stay within this folder
+            $git_cmd = "git --git-dir=" . escapeshellarg($path . '/.git') . " --work-tree=" . escapeshellarg($path);
+            
+            @exec($git_cmd . " fetch origin main 2>&1", $output, $return_var);
             
             if ($return_var !== 0) {
                 return false;
             }
 
-            // Check if local is behind remote
-            @exec("cd " . escapeshellarg($path) . " && git status -uno 2>&1", $status_output, $status_return);
+            @exec($git_cmd . " status -uno 2>&1", $status_output, $status_return);
             
             foreach ($status_output as $line) {
-                if (strpos($line, 'Your branch is behind') !== false) {
+                if (strpos($line, 'branch is behind') !== false) {
                     return true;
                 }
             }
@@ -47,7 +53,18 @@ class git_manager {
         global $CFG;
         $path = $CFG->dirroot . '/local/courseanalytics';
 
-        @exec("cd " . escapeshellarg($path) . " && git pull origin main 2>&1", $output, $return_var);
+        if (!is_dir($path . '/.git')) {
+            return [
+                'success' => false, 
+                'message' => 'The plugin directory is not a standalone Git repository. Please clone the plugin into local/courseanalytics.',
+                'output' => ''
+            ];
+        }
+
+        $git_cmd = "git --git-dir=" . escapeshellarg($path . '/.git') . " --work-tree=" . escapeshellarg($path);
+        
+        // Use a reset/pull strategy that only affects this directory
+        @exec($git_cmd . " pull origin main 2>&1", $output, $return_var);
 
         if ($return_var === 0) {
             return [
@@ -58,7 +75,7 @@ class git_manager {
         } else {
             return [
                 'success' => false,
-                'message' => 'Failed to pull updates. Check permissions on the VPS.',
+                'message' => 'Failed to pull updates. There might be local conflicts or permission issues.',
                 'output' => implode("\n", $output)
             ];
         }
