@@ -511,22 +511,28 @@ class course_manager {
             // Fetch course grade using Moodle Gradebook API
             $grade_display = 'N/A';
             $grade_class = 'secondary';
-            $grade_obj = \grade_get_course_grade($user->id, $courseid);
+            // Fetch course grade using standard Moodle Gradebook classes
+            $grade_display = 'N/A';
+            $grade_class = 'secondary';
             
-            if ($grade_obj && isset($grade_obj->grade) && $grade_obj->grade !== null) {
-                $grade_raw = (float)$grade_obj->grade;
-                $grade_max = (!empty($grade_obj->item) && $grade_obj->item->grademax) ? (float)$grade_obj->item->grademax : 100;
-                $grade_pct = ($grade_max > 0) ? round(($grade_raw / $grade_max) * 100, 1) : 0;
-                
-                $grade_display = $grade_pct . '%';
-                
-                // Color coding based on performance
-                if ($grade_pct >= 70) {
-                    $grade_class = 'success';
-                } elseif ($grade_pct >= 50) {
-                    $grade_class = 'warning';
-                } else {
-                    $grade_class = 'danger';
+            $grade_item = \grade_item::fetch_course_item($courseid);
+            if ($grade_item) {
+                $grade_grade = \grade_grade::fetch(['itemid' => $grade_item->id, 'userid' => $user->id]);
+                if ($grade_grade && $grade_grade->finalgrade !== null) {
+                    $grade_raw = (float)$grade_grade->finalgrade;
+                    $grade_max = (float)$grade_item->grademax;
+                    $grade_pct = ($grade_max > 0) ? round(($grade_raw / $grade_max) * 100, 1) : 0;
+                    
+                    $grade_display = $grade_pct . '%';
+                    
+                    // Color coding based on performance
+                    if ($grade_pct >= 70) {
+                        $grade_class = 'success';
+                    } elseif ($grade_pct >= 50) {
+                        $grade_class = 'warning';
+                    } else {
+                        $grade_class = 'danger';
+                    }
                 }
             }
 

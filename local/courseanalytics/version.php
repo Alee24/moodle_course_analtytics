@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseanalytics';
-$plugin->version   = 2024052025; // v1.3.5: Support direct git update from dashboard
+$plugin->version   = 2024052026; // v1.3.6: Fixed Gradebook API compatibility error
 $plugin->requires  = 2022111800; // Moodle 4.1 or later
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v1.3.5';
+$plugin->release   = 'v1.3.6';
