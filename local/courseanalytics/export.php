@@ -9,6 +9,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/excellib.class.php');
+require_once($CFG->libdir . '/csvlib.class.php');
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/enrol/locallib.php');
 
@@ -20,6 +21,7 @@ $categoryid    = optional_param('category', 0, PARAM_INT);
 $courseid      = optional_param('id', 0, PARAM_INT);
 $coursecode    = optional_param('coursecode', '', PARAM_TEXT);
 $lectureremail = optional_param('lectureremail', '', PARAM_TEXT);
+$format        = optional_param('format', 'excel', PARAM_ALPHA);
 
 // ---- Fetch all courses + stats ----
 if ($courseid > 0) {
@@ -30,6 +32,75 @@ if ($courseid > 0) {
     }
 } else {
     $courses = \local_courseanalytics\course_manager::get_courses($categoryid, 0, $coursecode, $lectureremail);
+}
+
+if ($format === 'csv') {
+    $filename = 'course_analytics_' . date('Ymd_His');
+    $csvwriter = new csv_export_writer('comma');
+    $csvwriter->set_filename($filename);
+
+    if (count($courses) == 1 && $courseid > 0) {
+        $course = $courses[0];
+        $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id, false);
+        
+        $lecturer_names = [];
+        foreach ($stats['lecturers'] as $l) { $lecturer_names[] = $l['name']; }
+        
+        $data_pairs = [
+            'Course Name' => $stats['fullname'],
+            'Category' => $course->categoryname,
+            'Lecturer Name' => implode(", ", $lecturer_names),
+            'Total Students' => $stats['total_students'],
+            'Active Students (7d)' => $stats['active_students'],
+            'Inactive Students' => $stats['inactive_students'],
+            'Completed Students' => $stats['completed_students'],
+            'Completion Rate %' => $stats['completion_rate'],
+            'Average Time Spent' => $stats['avg_time_spent'],
+            'Total Views' => $stats['total_views'],
+            'Total Resources / Activities' => $stats['total_modules'],
+        ];
+        
+        $csvwriter->add_data(['Metric', 'Value']);
+        foreach ($data_pairs as $label => $val) {
+            $csvwriter->add_data([$label, $val]);
+        }
+        
+        $csvwriter->add_data([]);
+        $csvwriter->add_data(['Detailed Student Breakdown']);
+        $csvwriter->add_data(['Name', 'Email', 'Views', 'Assignments', 'Quizzes', 'Virtual Sessions', 'Overall Grade', 'Last Access']);
+        
+        $student_list = \local_courseanalytics\course_manager::get_student_list($courseid);
+        foreach ($student_list as $s) {
+            $csvwriter->add_data([$s['fullname'], $s['email'], $s['logins'], $s['assigns'], $s['quizzes'], $s['bbb'], $s['grade'], $s['lastaccess']]);
+        }
+    } else {
+        $headers = [
+            'Course Name', 'Category', 'Total Students', 'Active Students (7d)', 
+            'Inactive Students', 'Completed Students', 'Completion Rate %', 
+            'Average Time Spent', 'Total Views', 'Total Resources / Activities'
+        ];
+        $csvwriter->add_data($headers);
+        
+        foreach ($courses as $course) {
+            $skip_heavy = count($courses) > 1;
+            $stats = \local_courseanalytics\course_manager::get_course_full_stats($course->id, $skip_heavy);
+            
+            $csvwriter->add_data([
+                $stats['fullname'],
+                $course->categoryname,
+                $stats['total_students'],
+                $stats['active_students'],
+                $stats['inactive_students'],
+                $stats['completed_students'],
+                $stats['completion_rate'],
+                $stats['avg_time_spent'],
+                $stats['total_views'],
+                $stats['total_modules']
+            ]);
+        }
+    }
+    $csvwriter->download_file();
+    die();
 }
 
 // ---- Create Excel Workbook ----

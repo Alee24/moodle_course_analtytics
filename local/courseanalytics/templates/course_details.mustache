@@ -10,9 +10,12 @@
             <a href="{{urls.back}}" class="ca-btn ca-btn-outline">
                 <i class="fa fa-arrow-left mr-2"></i> Back
             </a>
-            <a href="{{urls.export}}" class="ca-btn ca-btn-primary">
-                <i class="fa fa-download mr-2"></i> Export Report
+            <a href="{{urls.export}}&format=csv" class="ca-btn ca-btn-primary">
+                <i class="fa fa-file-csv mr-2"></i> Export CSV
             </a>
+            <button onclick="window.print()" class="ca-btn ca-btn-primary" style="background: var(--ca-danger);">
+                <i class="fa fa-file-pdf mr-2"></i> Export PDF
+            </button>
         </div>
     </div>
 
@@ -41,6 +44,14 @@
             </div>
             <div class="ca-kpi-label">Completion Rate</div>
             <div class="ca-kpi-value mt-1">{{metrics.completion_rate}}%</div>
+        </div>
+        <div class="ca-card ca-kpi-card">
+            <div class="ca-kpi-header">
+                <div class="ca-kpi-icon blue"><i class="fa fa-cubes"></i></div>
+                <div class="ca-badge gray">Content</div>
+            </div>
+            <div class="ca-kpi-label">Total Activities</div>
+            <div class="ca-kpi-value mt-1">{{metrics.total_modules}}</div>
         </div>
         <div class="ca-card ca-kpi-card">
             <div class="ca-kpi-header">
