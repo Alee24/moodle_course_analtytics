@@ -364,6 +364,14 @@ class course_manager {
             'total_views'       => $s['total_views'],
             'h5p'               => $s['h5p'],
             'bbb'               => $s['bbb'],
+            'assignments'       => $s['assignments'],
+            'quizzes'           => $s['quizzes'],
+            'forums'            => $s['forums'],
+            'files'             => $s['files'],
+            'urls'              => $s['urls'],
+            'pages'             => $s['pages'],
+            'videos'            => $s['videos'],
+            'other_modules'     => $s['other_modules'],
             'hidden_modules'    => 0,
         ];
     }

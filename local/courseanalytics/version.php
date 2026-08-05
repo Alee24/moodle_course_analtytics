@@ -10,7 +10,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseanalytics';
-$plugin->version   = 2026080500; // v3.0.0: Enterprise SaaS Dashboard Overhaul
+$plugin->version   = 2026080501; // v3.0.1: Resource Breakdown UI addition
 $plugin->requires  = 2022111800; // Moodle 4.1 or later
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v3.0.0';
+$plugin->release   = 'v3.0.1';

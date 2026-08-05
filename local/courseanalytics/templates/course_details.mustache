@@ -117,6 +117,60 @@
         </div>
     </div>
 
+    {{! ===== RESOURCE BREAKDOWN ===== }}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="ca-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <h5 class="font-weight-bold text-dark m-0"><i class="fa fa-cubes mr-2 text-info"></i> Resource Breakdown</h5>
+                    <div class="ca-badge gray">Total: {{metrics.total_modules}}</div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.files}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Files</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.assignments}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Assignments</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.quizzes}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Quizzes</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.forums}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Forums</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.videos}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Videos</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.urls}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">URLs / Links</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.pages}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Pages</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.h5p}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">H5P / Interactive</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.bbb}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Virtual Sessions</div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 mb-3">
+                        <div class="font-weight-bold" style="font-size: 1.8rem; color: var(--ca-primary);">{{metrics.other_modules}}</div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Other</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{! ===== TABS FOR DETAILED TABLES ===== }}
     <ul class="nav nav-pills mb-4 border-bottom pb-2" id="courseAnalyticsTabs" role="tablist">
         <li class="nav-item">
