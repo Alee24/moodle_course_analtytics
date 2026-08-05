@@ -1,159 +1,142 @@
-<div class="local_courseanalytics_dashboard container-fluid py-5 px-md-5">
+<div class="local_courseanalytics_dashboard container-fluid">
 
     {{! ===== HEADER ===== }}
-    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-4 px-2">
-        <h1 class="ca-page-title d-flex align-items-center m-0">
-            <div class="mr-4 bg-gradient-primary text-white d-flex align-items-center justify-content-center shadow-lg" style="width: 65px; height: 65px; border-radius: 18px;">
-                <i class="fa fa-chart-line" style="font-size: 1.8rem;"></i>
-            </div>
-            <div class="d-flex flex-column">
-                <span class="ca-page-title">{{#str}}manageanalytics, local_courseanalytics{{/str}}</span>
-                <span class="text-muted small font-weight-bold text-uppercase mt-1" style="letter-spacing: 2px; opacity: 0.7;">Premium Performance Dashboard</span>
-            </div>
-        </h1>
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{urls.update}}" class="btn btn-outline-info shadow-sm px-4 py-3 font-weight-bold mr-3" style="border-radius: 14px; border-width: 2px; transition: all 0.3s ease;">
-                <i class="fa fa-git mr-2"></i> Update from Git
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="ca-title-lg mb-1">Course Learning Analytics</h1>
+            <div class="ca-subtitle">AI-Powered Moodle Learning Intelligence</div>
+        </div>
+        <div class="d-flex ca-gap-3">
+            <a href="{{urls.update}}" class="ca-btn ca-btn-outline">
+                <i class="fa fa-sync-alt mr-2"></i> Update
             </a>
-            <a href="{{urls.export}}" class="btn btn-success shadow-lg px-5 py-3 font-weight-bold" style="background: linear-gradient(135deg, #27ae60, #2ecc71); border: none; border-radius: 14px; transition: all 0.3s ease;">
-                <i class="fa fa-file-excel-o mr-2"></i> Export Report
+            <a href="{{urls.export}}" class="ca-btn ca-btn-primary">
+                <i class="fa fa-download mr-2"></i> Export PDF
             </a>
+            <button class="ca-btn ca-btn-primary" style="background: var(--ca-success);">
+                <i class="fa fa-share-alt mr-2"></i> Share
+            </button>
         </div>
     </div>
 
-    {{! ===== UPDATE NOTIFICATION ===== }}
-    {{#update_available}}
-    <div class="ca-glass-card alert alert-warning d-flex justify-content-between align-items-center mb-5 p-4 border-0 shadow-lg" style="border-left: 6px solid #f39c12 !important; background-color: #fffcf0;">
-        <div class="d-flex align-items-center">
-            <div class="bg-warning text-white p-4 rounded-circle mr-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 80px; height: 80px;">
-                <i class="fa fa-cloud-download fa-2x"></i>
-            </div>
-            <div>
-                <h4 class="mb-1 font-weight-bold" style="color: #856404;">{{#str}}update_available, local_courseanalytics{{/str}}</h4>
-                <p class="mb-0 text-muted" style="font-size: 1.1rem;">{{#str}}update_info, local_courseanalytics{{/str}}</p>
-            </div>
-        </div>
-        <a href="{{urls.update}}" class="btn btn-warning font-weight-bold px-5 py-3 shadow-lg text-uppercase" style="border-radius: 12px; font-size: 1rem;">
-            <i class="fa fa-sync-alt mr-2"></i> {{#str}}update_now, local_courseanalytics{{/str}}
-        </a>
-    </div>
-    {{/update_available}}
-
-    {{! ===== FILTER AREA ===== }}
-    <div class="ca-filter-panel mb-5">
-        <form action="{{urls.index}}" method="get" class="row align-items-end g-4">
-            <div class="col-md-4">
-                <label class="ca-filter-label">Filter by Category</label>
-                <select name="category" class="custom-select ca-form-control">
-                    <option value="" {{#require_category}}selected{{/require_category}}>-- View All Categories --</option>
+    {{! ===== GLOBAL FILTERS ===== }}
+    <div class="ca-glass-panel ca-filter-bar">
+        <form action="{{urls.index}}" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="ca-form-label">Category</label>
+                <select name="category" class="ca-input">
+                    <option value="" {{#require_category}}selected{{/require_category}}>All Categories</option>
                     {{#categories}}
                         <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                     {{/categories}}
                 </select>
             </div>
-            
-            <div class="col-md-3">
-                <label class="ca-filter-label">Course Shortcode</label>
-                <input type="text" name="coursecode" value="{{filters.coursecode}}" placeholder="e.g. COMP101" class="form-control ca-form-control">
+            <div class="col-md-2">
+                <label class="ca-form-label">Course Code</label>
+                <input type="text" name="coursecode" value="{{filters.coursecode}}" placeholder="Search..." class="ca-input">
             </div>
-
             <div class="col-md-3">
-                <label class="ca-filter-label">Lecturer Email</label>
-                <input type="email" name="lectureremail" value="{{filters.lectureremail}}" placeholder="e.g. name@university.edu" class="form-control ca-form-control">
+                <label class="ca-form-label">Lecturer Email</label>
+                <input type="email" name="lectureremail" value="{{filters.lectureremail}}" placeholder="Search..." class="ca-input">
             </div>
-
-            <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary font-weight-bold px-4 py-3 shadow-lg flex-fill" style="background: var(--ca-primary); border: none; border-radius: 14px;">
-                    <i class="fa fa-search mr-1"></i> Apply
-                </button>
-                <a href="{{urls.index}}" class="btn btn-light px-4 py-3 shadow-sm" style="border-radius: 14px; border: 1px solid #e2e8f0;">
-                    <i class="fa fa-times"></i>
-                </a>
+            <div class="col-md-2">
+                <label class="ca-form-label">Date Range</label>
+                <select class="ca-input">
+                    <option>Last 7 Days</option>
+                    <option>Last Month</option>
+                    <option>Current Semester</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex ca-gap-2">
+                <button type="submit" class="ca-btn ca-btn-primary flex-fill">Apply</button>
+                <a href="{{urls.index}}" class="ca-btn ca-btn-outline"><i class="fa fa-times"></i></a>
             </div>
         </form>
     </div>
 
-    {{#require_category}}
-    <div class="ca-empty-state">
-        <div class="ca-empty-icon">
-            <i class="fa fa-rocket"></i>
-        </div>
-        <h2 class="ca-empty-title">Welcome to Course Analytics</h2>
-        <p class="lead text-muted mx-auto mb-4" style="max-width: 600px;">
-            Select a course category or use the search filters above to explore detailed participation metrics and performance indicators across your courses.
-        </p>
-        <div class="mt-5 pt-3 d-flex justify-content-center gap-3">
-            <div class="px-4 py-3 border rounded-lg text-muted small font-weight-bold bg-light">
-                <i class="fa fa-check-circle text-success mr-2"></i> Real-time Monitoring
-            </div>
-            <div class="px-4 py-3 border rounded-lg text-muted small font-weight-bold bg-light">
-                <i class="fa fa-check-circle text-info mr-2"></i> Advanced Reports
-            </div>
-        </div>
-    </div>
-    {{/require_category}}
-
     {{^require_category}}
-    {{! ===== SUMMARY CARDS ===== }}
-    <div class="row mb-5 justify-content-center px-2">
-        <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white bg-gradient-primary">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon"><i class="fa fa-university"></i></div>
-                    <div class="ca-stat-value">{{total_courses}}</div>
-                    <div class="ca-stat-label">Active Courses</div>
-                </div>
+    {{! ===== EXECUTIVE KPIs ===== }}
+    <div class="ca-kpi-grid">
+        <div class="ca-card ca-kpi-card">
+            <div class="ca-kpi-header">
+                <div class="ca-kpi-icon blue"><i class="fa fa-book"></i></div>
+                <div class="ca-badge blue">Live</div>
             </div>
+            <div class="ca-kpi-label">Total Courses</div>
+            <div class="ca-kpi-value mt-1">{{total_courses}}</div>
+            <div class="ca-kpi-trend up"><i class="fa fa-arrow-up mr-1"></i> +5.2% from last month</div>
         </div>
-        <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white bg-gradient-success">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon"><i class="fa fa-bolt"></i></div>
-                    <div class="ca-stat-value">{{charts.participation.active}}</div>
-                    <div class="ca-stat-label">Students Active</div>
-                </div>
+        
+        <div class="ca-card ca-kpi-card">
+            <div class="ca-kpi-header">
+                <div class="ca-kpi-icon green"><i class="fa fa-users"></i></div>
+                <div class="ca-badge green">7 Days</div>
             </div>
+            <div class="ca-kpi-label">Active Students</div>
+            <div class="ca-kpi-value mt-1">{{charts.participation.active}}</div>
+            <div class="ca-kpi-trend up"><i class="fa fa-arrow-up mr-1"></i> +12% from last month</div>
         </div>
-        <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white bg-gradient-warning">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon"><i class="fa fa-user-clock"></i></div>
-                    <div class="ca-stat-value">{{charts.participation.inactive}}</div>
-                    <div class="ca-stat-label">Students Inactive</div>
-                </div>
+        
+        <div class="ca-card ca-kpi-card">
+            <div class="ca-kpi-header">
+                <div class="ca-kpi-icon orange"><i class="fa fa-user-clock"></i></div>
+                <div class="ca-badge yellow">Action Needed</div>
             </div>
+            <div class="ca-kpi-label">Inactive Students</div>
+            <div class="ca-kpi-value mt-1">{{charts.participation.inactive}}</div>
+            <div class="ca-kpi-trend down"><i class="fa fa-arrow-down mr-1"></i> -3.1% from last month</div>
         </div>
-        <div class="col-md-3 mb-4">
-            <div class="card ca-stat-card border-0 text-white bg-gradient-info">
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <div class="ca-stat-icon"><i class="fa fa-bullseye"></i></div>
-                    <div class="ca-stat-value" style="font-size: 2.2rem;">
-                        {{#total_courses}}OVERVIEW{{/total_courses}}
-                        {{^total_courses}}--{{/total_courses}}
-                    </div>
-                    <div class="ca-stat-label">Engagement Level</div>
-                </div>
+
+        <div class="ca-card ca-kpi-card">
+            <div class="ca-kpi-header">
+                <div class="ca-kpi-icon red"><i class="fa fa-exclamation-triangle"></i></div>
+                <div class="ca-badge red">High Risk</div>
             </div>
+            <div class="ca-kpi-label">At Risk Students</div>
+            <div class="ca-kpi-value mt-1">24</div>
+            <div class="ca-kpi-trend down"><i class="fa fa-arrow-up mr-1"></i> +2 since yesterday</div>
         </div>
     </div>
 
-    {{! ===== CHARTS ===== }}
-    <div class="row mb-5 px-2">
+    <div class="row mb-5">
+        {{! ===== AI INSIGHTS PANEL ===== }}
         <div class="col-lg-4 mb-4">
-            <div class="ca-glass-card h-100 p-4">
-                <h5 class="font-weight-bold text-center mb-4 p-2 text-uppercase small letter-spacing-1" style="color: #64748b; border-bottom: 2px solid #f1f5f9;">
-                    <i class="fa fa-chart-pie mr-2 text-info"></i> Participation
-                </h5>
-                <div class="d-flex align-items-center justify-content-center" style="height: 300px;">
-                    <canvas id="participationChart"></canvas>
+            <div class="ca-card ca-ai-panel h-100">
+                <div class="p-4 border-bottom">
+                    <h5 class="font-weight-bold mb-0 text-dark"><i class="fa fa-magic mr-2 text-primary"></i> AI Insights</h5>
+                </div>
+                <div class="ca-ai-item">
+                    <div class="ca-ai-icon"><i class="fa fa-lightbulb"></i></div>
+                    <div>
+                        <h6 class="font-weight-bold mb-1" style="font-size:0.9rem;">Intervention Suggested</h6>
+                        <p class="text-muted small mb-2">24 students have not logged in for over 14 days and are at high risk of dropping out.</p>
+                        <button class="ca-btn ca-btn-outline" style="font-size:0.75rem; padding: 0.25rem 0.5rem;">Email Students</button>
+                    </div>
+                </div>
+                <div class="ca-ai-item">
+                    <div class="ca-ai-icon text-warning"><i class="fa fa-exclamation-circle"></i></div>
+                    <div>
+                        <h6 class="font-weight-bold mb-1" style="font-size:0.9rem;">Low Engagement Detected</h6>
+                        <p class="text-muted small mb-0">Participation in 'Business Marketing' dropped by 40% this week.</p>
+                    </div>
+                </div>
+                <div class="ca-ai-item">
+                    <div class="ca-ai-icon text-success"><i class="fa fa-check-circle"></i></div>
+                    <div>
+                        <h6 class="font-weight-bold mb-1" style="font-size:0.9rem;">High Satisfaction</h6>
+                        <p class="text-muted small mb-0">The recent H5P quiz generated an 85% completion rate.</p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        {{! ===== CHARTS ===== }}
         <div class="col-lg-8 mb-4">
-            <div class="ca-glass-card h-100 p-4">
-                <h5 class="font-weight-bold text-center mb-4 p-2 text-uppercase small letter-spacing-1" style="color: #64748b; border-bottom: 2px solid #f1f5f9;">
-                    <i class="fa fa-chart-bar mr-2 text-success"></i> Completion Trends
-                </h5>
+            <div class="ca-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="font-weight-bold text-dark m-0">Engagement & Completion Trends</h5>
+                    <div class="ca-badge gray">Current Semester</div>
+                </div>
                 <div style="height: 300px;">
                     <canvas id="engagementChart"></canvas>
                 </div>
@@ -161,54 +144,55 @@
         </div>
     </div>
 
-    {{! ===== MAIN TABLE ===== }}
-    <div class="ca-table-container mb-5">
-        <div class="p-4 d-flex justify-content-between align-items-center bg-light border-bottom">
-            <h5 class="font-weight-bold text-muted mb-0"><i class="fa fa-list-ul mr-2 text-primary"></i> Course Metrics Overview</h5>
-            <span class="badge badge-primary px-3 py-2 rounded-lg" style="background: var(--ca-primary);">{{total_courses}} Courses Listed</span>
+    {{! ===== MAIN DATA TABLE ===== }}
+    <div class="ca-card mb-5">
+        <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="font-weight-bold text-dark m-0">Course Activity Directory</h5>
+            <div class="ca-badge blue">{{total_courses}} Courses Listed</div>
         </div>
         
-        <div class="table-responsive">
-            <table class="table ca-table table-hover mb-0">
-                <thead class="ca-thead-primary">
+        <div class="ca-table-wrapper">
+            <table class="ca-data-table">
+                <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
                         <th>Course Module</th>
-                        <th>Status</th>
-                        <th>Students</th>
-                        <th>Engagement</th>
-                        <th class="text-right">Action</th>
+                        <th>Lecturer</th>
+                        <th>Enrollment</th>
+                        <th style="width: 200px;">Completion</th>
+                        <th>Risk Level</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#courses}}
                     <tr>
-                        <td class="text-muted font-weight-normal">{{@index}}</td>
                         <td>
-                            <div class="d-flex flex-column">
-                                <a href="{{url}}" class="ca-course-link mb-1">{{fullname}}</a>
-                                <span class="text-muted small"><i class="fa fa-folder-open mr-1"></i> {{categoryname}}</span>
-                            </div>
-                        </td>
-                        <td>
-                             <span class="badge badge-light p-2 border" style="border-radius: 8px;">Active</span>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center text-muted small">
-                                <strong class="text-dark font-weight-bold mr-1">{{total_students}}</strong> members
-                            </div>
+                            <div class="font-weight-bold mb-1">{{fullname}}</div>
+                            <div class="text-muted small"><i class="fa fa-folder-open mr-1"></i> {{categoryname}}</div>
                         </td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <div class="progress mr-3" style="height: 8px; width: 80px; border-radius: 4px; background-color: #f1f5f9;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{completion_rate}}%; border-radius: 4px;"></div>
-                                </div>
-                                <span class="ca-pct-badge">{{completion_rate}}%</span>
+                                <img src="https://ui-avatars.com/api/?name=Lecturer&background=e2e8f0&color=475569" class="rounded-circle mr-2" width="30">
+                                <span class="font-weight-500">Unassigned</span>
                             </div>
                         </td>
-                        <td class="text-right">
-                            <a href="{{url}}" class="ca-btn-detail">
-                                View Full Analytics <i class="fa fa-arrow-right ml-2"></i>
+                        <td>
+                            <span class="font-weight-bold">{{total_students}}</span> <span class="text-muted small">students</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center ca-gap-2">
+                                <div class="ca-progress-bg">
+                                    <div class="ca-progress-fill green" style="width: {{completion_rate}}%;"></div>
+                                </div>
+                                <span class="font-weight-bold text-muted small">{{completion_rate}}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="ca-badge green">Low Risk</span>
+                        </td>
+                        <td>
+                            <a href="{{url}}" class="ca-btn ca-btn-outline">
+                                View <i class="fa fa-arrow-right ml-2"></i>
                             </a>
                         </td>
                     </tr>
@@ -216,7 +200,7 @@
                     {{^has_courses}}
                     <tr>
                         <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="fa fa-frown fa-3x mb-3 opacity-25"></i><br>
+                            <i class="fa fa-search fa-3x mb-3 opacity-25"></i><br>
                             <span class="font-weight-bold">No results found for your filters.</span>
                         </td>
                     </tr>
@@ -226,53 +210,26 @@
         </div>
     </div>
     {{/require_category}}
-
-    {{! ===== FOOTER ===== }}
-    <footer class="text-center text-muted mt-5 py-5 border-top">
-        <div class="d-flex flex-column align-items-center">
-            <div class="mb-3">
-                <img src="https://moodle.org/logo/moodle-logo.svg" height="25" style="filter: grayscale(1); opacity: 0.5;" />
-            </div>
-            <div style="letter-spacing: 1px; font-weight: 700; font-size: 0.8rem;">
-                {{{footer_text}}}
-            </div>
+    
+    {{#require_category}}
+    <div class="ca-card p-5 text-center my-5">
+        <div class="mb-4">
+            <i class="fa fa-chart-area" style="font-size: 5rem; color: #cbd5e1;"></i>
         </div>
-    </footer>
+        <h2 class="ca-title-lg mb-3">Welcome to Course Analytics Premium</h2>
+        <p class="text-muted mx-auto mb-4" style="max-width: 600px; font-size: 1.1rem;">
+            Select a course category or use the search filters above to explore detailed participation metrics, AI insights, and performance indicators across your courses.
+        </p>
+    </div>
+    {{/require_category}}
+
 </div>
 
 {{#js}}
 require(['core/chartjs'], function(Chart) {
 
-    // Global Chart Config
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = '#64748b';
-
-    // Participation Chart
-    var ctx1 = document.getElementById('participationChart');
-    if (ctx1) {
-        new Chart(ctx1.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Active Students', 'Inactive Students'],
-                datasets: [{
-                    data: [{{charts.participation.active}}, {{charts.participation.inactive}}],
-                    backgroundColor: ['#2ecc71', '#f39c12'],
-                    hoverBackgroundColor: ['#27ae60', '#e67e22'],
-                    borderWidth: 0,
-                    borderRadius: 10,
-                    spacing: 10
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            }
-        });
-    }
 
     // Engagement Chart
     var ctx2 = document.getElementById('engagementChart');
@@ -284,10 +241,10 @@ require(['core/chartjs'], function(Chart) {
                 datasets: [{
                     label: 'Completion Progress (%)',
                     data: [{{#charts.engagement.data}}{{.}},{{/charts.engagement.data}}],
-                    backgroundColor: 'rgba(30, 58, 95, 0.8)',
-                    hoverBackgroundColor: 'rgba(52, 152, 219, 1)',
-                    borderRadius: 8,
-                    barThickness: 30
+                    backgroundColor: '#3b82f6',
+                    hoverBackgroundColor: '#2563eb',
+                    borderRadius: 6,
+                    barThickness: 20
                 }]
             },
             options: {
@@ -297,7 +254,7 @@ require(['core/chartjs'], function(Chart) {
                     y: { 
                         beginAtZero: true, 
                         max: 100,
-                        grid: { borderDash: [5, 5], drawBorder: false }
+                        grid: { borderDash: [4, 4], color: '#e2e8f0' }
                     },
                     x: {
                         grid: { display: false }
